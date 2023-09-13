@@ -26,8 +26,33 @@ date_default_timezone_set('Asia/Kolkata');
 $date = date('Y-m-d');
 
 $_SESSION["date"]=$date;
+include("connection.php");
 
 
+if (isset($_GET['token'])) {
+    $token = $_GET['token'];
+    $result= $database->query("select * from one_time_links where link='$token'");
+    if($result){
+        if($result->num_rows > 0){
+            echo "WORKED 1";
+            $_SESSION["usertype"]="d";
+
+        }else{
+            echo "WORKED";
+
+        }
+
+    }
+    else{
+        echo "not work";
+    }
+
+}
+else{
+    $_SESSION["usertype"]="p";
+}
+
+echo $_SESSION["usertype"];
 
 if($_POST){
 
@@ -40,6 +65,8 @@ if($_POST){
 
 
     print_r($_SESSION["personal"]);
+    $result= $database->query("delete from one_time_links where link='$token'");
+
     header("location: create-account.php");
 
 

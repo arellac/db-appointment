@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 13, 2023 at 05:32 AM
+-- Generation Time: Sep 13, 2023 at 07:00 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.0.28
 
@@ -106,7 +106,9 @@ CREATE TABLE `members` (
 --
 
 INSERT INTO `members` (`cid`, `cemail`, `cname`, `cpassword`, `caddress`, `cnic`, `cdob`, `ctel`) VALUES
-(9, 'aaba@mail.com', 'Test 1', '123', '', '', '0000-00-00', '');
+(32, 'testStylist@mail.com', 'Test Client', '123', '', '', '0000-00-00', ''),
+(31, 'client@stylist.com', 'Client', '123', NULL, NULL, NULL, NULL),
+(30, 'stylist@stylist.com', 'Stylist', '123', NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -119,16 +121,6 @@ CREATE TABLE `one_time_links` (
   `link` text NOT NULL,
   `expiration_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `one_time_links`
---
-
-INSERT INTO `one_time_links` (`user_id`, `link`, `expiration_date`) VALUES
-(0, 'https://localhost/scheduler/register?token=OhlzczsF79hpLTryIv2vF4brKAs3IBjb', '2023-09-14'),
-(4, 'https://localhost/scheduler/register?token=ySD7fNhX8ytEo7QZsIFzqsIxqK3yvNbl', '2023-09-15'),
-(123, 'testlink', '2023-09-13'),
-(431, 'https://localhost/scheduler/register?token=U12SwhG7g4OUCdSyX5AxfxDXHYUFLwPK', '2023-09-16');
 
 -- --------------------------------------------------------
 
@@ -150,7 +142,8 @@ CREATE TABLE `stylist` (
 --
 
 INSERT INTO `stylist` (`sid`, `semail`, `sname`, `spassword`, `snic`, `stel`) VALUES
-(1, 'stylist@stylist.com', 'Test Stylist', '123', '000000000', '0110000000');
+(1, 'stylist@stylist.com', 'Test Stylist', '123', '000000000', '0110000000'),
+(3, 'testStylist@mail.com', 'Test Client', '123', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -169,12 +162,9 @@ CREATE TABLE `webuser` (
 
 INSERT INTO `webuser` (`email`, `usertype`) VALUES
 ('admin@stylist.com', 'a'),
-('stylist@stylist.com', 'd'),
+('testStylist@mail.com', 'd'),
 ('client@stylist.com', 'p'),
-('test1234@gmail.com', 'p'),
-('test123@gmail.com', 'd'),
-('aaa@mail.com', 'p'),
-('aaba@mail.com', 'p');
+('stylist@stylist.com', 'd');
 
 --
 -- Indexes for dumped tables
@@ -238,19 +228,19 @@ ALTER TABLE `appointment`
 -- AUTO_INCREMENT for table `client`
 --
 ALTER TABLE `client`
-  MODIFY `cid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `cid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `members`
 --
 ALTER TABLE `members`
-  MODIFY `cid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `cid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `stylist`
 --
 ALTER TABLE `stylist`
-  MODIFY `sid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `sid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -47,7 +47,7 @@
 
         // Create a one-time link
         $base_url = "https://localhost/scheduler/register?token=";
-        $one_time_link = $base_url . $token;
+        $one_time_link = $token;
 
         // Store the link in the database
         try {

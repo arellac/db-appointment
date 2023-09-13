@@ -23,7 +23,7 @@
 session_start();
 
 $_SESSION["user"]="";
-$_SESSION["usertype"]="";
+// $_SESSION["usertype"]="";
 
 // Set the new timezone
 date_default_timezone_set('Asia/Kolkata');
@@ -35,9 +35,7 @@ $_SESSION["date"]=$date;
 //import database
 include("connection.php");
 
-
-
-
+echo $_SESSION["usertype"];
 
 if($_POST){
 
@@ -49,6 +47,7 @@ if($_POST){
     $email=$_POST['newemail'];
     $newpassword=$_POST['newpassword'];
     $cpassword=$_POST['cpassword'];
+    $utype = $_SESSION["usertype"];
     
     if ($newpassword==$cpassword){
         $sqlmain= "select * from webuser where email=?;";
@@ -61,14 +60,25 @@ if($_POST){
         }else{
             //TODO
             $database->query("insert into members(cemail,cname,cpassword, caddress, cnic,cdob,ctel) values('$email','$name','$newpassword','$address','$nic','$dob','$tele');");
-            $database->query("insert into webuser values('$email','p')");
+
+            $database->query("insert into webuser values('$email','$utype')");
+            echo $_SESSION["usertype"];
 
             //print_r("insert into client values($pid,'$email','$fname','$lname','$newpassword','$address','$nic','$dob','$tele');");
             $_SESSION["user"]=$email;
-            $_SESSION["usertype"]="p";
             $_SESSION["username"]=$fname;
+            if($utype=='d'){
+                $database->query("insert into stylist(semail, sname, spassword) values('$email','$name','$newpassword');");
 
-            header('Location: client/index.php');
+                header('Location: stylist/index.php');
+                
+            }
+            elseif($utype=='p'){
+                $database->query("insert into client(cemail, cname, cpassword) values('$email','$name','$newpassword');");
+                header('Location: client/index.php');
+            }
+            // header('Location: client/index.php');
+
             $error='<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;"></label>';
         }
         
