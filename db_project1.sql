@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 12, 2023 at 11:41 PM
+-- Generation Time: Sep 13, 2023 at 05:32 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.0.28
 
@@ -111,6 +111,28 @@ INSERT INTO `members` (`cid`, `cemail`, `cname`, `cpassword`, `caddress`, `cnic`
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `one_time_links`
+--
+
+CREATE TABLE `one_time_links` (
+  `user_id` int(11) NOT NULL,
+  `link` text NOT NULL,
+  `expiration_date` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `one_time_links`
+--
+
+INSERT INTO `one_time_links` (`user_id`, `link`, `expiration_date`) VALUES
+(0, 'https://localhost/scheduler/register?token=OhlzczsF79hpLTryIv2vF4brKAs3IBjb', '2023-09-14'),
+(4, 'https://localhost/scheduler/register?token=ySD7fNhX8ytEo7QZsIFzqsIxqK3yvNbl', '2023-09-15'),
+(123, 'testlink', '2023-09-13'),
+(431, 'https://localhost/scheduler/register?token=U12SwhG7g4OUCdSyX5AxfxDXHYUFLwPK', '2023-09-16');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `stylist`
 --
 
@@ -183,6 +205,12 @@ ALTER TABLE `client`
 --
 ALTER TABLE `members`
   ADD PRIMARY KEY (`cid`);
+
+--
+-- Indexes for table `one_time_links`
+--
+ALTER TABLE `one_time_links`
+  ADD UNIQUE KEY `index` (`user_id`);
 
 --
 -- Indexes for table `stylist`
