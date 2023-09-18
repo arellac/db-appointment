@@ -11,7 +11,7 @@
 
     //learn from w3schools.com
 
-    session_start();
+    // session_start();
 
     if(isset($_SESSION["user"])){
         if(($_SESSION["user"])=="" or $_SESSION['usertype']!='a'){

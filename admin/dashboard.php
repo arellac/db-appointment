@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="../css/admin.css">  
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.css" rel="stylesheet" />
+
     <title>Dashboard</title>
 </head>
-<body>
-    <h1>Dashboard</h1>
+<body class="bg-slate-500">
+
+    <h1 >Dashboard</h1>
 
     <?php
     // Include your database connection code here
@@ -49,7 +53,14 @@
         // Handle database errors
         echo "Database Error: " . $e->getMessage();
     }
-    ?>
 
+    
+    ?>
+    <?php include('index.php'); ?>
+
+
+    
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.js"></script>
 </body>
 </html>

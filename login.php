@@ -22,7 +22,7 @@
 
     $_SESSION["user"]="";
     $_SESSION["usertype"]="";
-    
+
     // Set the new timezone
     date_default_timezone_set('Asia/Kolkata');
     $date = date('Y-m-d');
@@ -73,7 +73,7 @@
                     $_SESSION['user']=$email;
                     $_SESSION['usertype']='a';
                     
-                    header('location: admin/index.php');
+                    header('location: admin/home.php');
 
                 }else{
                     $error='<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
@@ -119,9 +119,9 @@
     <center>
     <div class="__layout">
              
-             <div class="text-black flex items-start md:items-center justify-center min-h-screen bg-image px-4 py-8 md:pt-0 bg-gray-50">
+             <div class="text-black flex items-start md:items-center justify-center min-h-screen bg-image px-4 py-8 md:pt-0 bg-[#FAF6F4]">
                  <div class="flex items-center justify-center flex-col">
-                    Styule
+                    <img src="./css/hair_logo.png" alt="Company Logo" width="100" height="100">
                     <div class="flex items-start content-start justify-start h-full overflow-hidden bg-white rounded-lg shadow card mt-4 rounded-lg shadow max-w-md p-8 w-full">
                      <div class="w-full">
                              <div class=" w-full min-w-[300px]">
@@ -163,8 +163,8 @@
                             <input type="submit" value="Login" class="inline-flex w-full items-center justify-center rounded-md border border-transparent bg-[#1B145D] px-6 py-4 text-sm font-bold text-white transition-all duration-200 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2">
                         </div>
                         </br>
-                        <label for="" class="sub-text" style="font-weight: 280;">Don't have an account&#63; </label>
-                        <a href="signup.php" class="hover-link1 non-style-link">Sign Up</a>
+                        <label for="" class="sub-text" style="font-weight: 280; ">Don't have an account&#63; </label>
+                        <a href="signup.php" class="hover-link1 non-style-link text-orange-500	">Sign Up</a>
                         <br><br><br>
                 </td>
             </tr>    

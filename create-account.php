@@ -100,9 +100,10 @@ if($_POST){
     <center>
     <div class="__layout">
              
-             <div class="text-black flex items-start md:items-center justify-center min-h-screen bg-image px-4 py-8 md:pt-0 bg-gray-50">
+             <div class="text-black flex items-start md:items-center justify-center min-h-screen bg-image px-4 py-8 md:pt-0 bg-[#FAF6F4]">
                  <div class="flex items-center justify-center flex-col">
-                    Styule
+                 <img src="./css/hair_logo.png" alt="Company Logo" width="100" height="100">
+
                      <div class="flex items-start content-start justify-start h-full overflow-hidden bg-white rounded-lg shadow card mt-4 rounded-lg shadow max-w-md p-8 w-full">
                      <div class="w-full">
                              <div class="text-center w-full min-w-[300px]">
