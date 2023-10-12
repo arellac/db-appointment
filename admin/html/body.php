@@ -44,6 +44,35 @@
                 <table class="text-left w-full border-collapse">
                     <thead class="border-b">
                         <tr>
+                            <th class="py-3 px-5 bg-indigo-800 font-medium uppercase text-sm text-gray-100">Date</th>
+                            <th class="py-3 px-5 bg-indigo-800 font-medium uppercase text-sm text-gray-100">StylistID</th>
+                            <th class="py-3 px-5 bg-indigo-800 font-medium uppercase text-sm text-gray-100">Client</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                            $result = $database->query("SELECT a.appodate, a.scheduletime, a.sid, a.pid, c.cname, s.sname
+                            FROM appointment AS a
+                            INNER JOIN client AS c ON a.pid = c.cid
+                            INNER JOIN stylist AS s ON a.sid = s.sid");
+
+                            if ($result->num_rows > 0) {
+                                while ($row = $result->fetch_assoc()) {
+                                    echo '<tr class="hover:bg-gray-200">';
+                                    echo '<td class="py-4 px-6 border-b text-gray-700 text-lg">' . $row['appodate'] . ' ' . $row['scheduletime'] . '</td>';
+                                    echo '<td class="py-4 px-6 border-b text-gray-500">' . $row['sname'] . '</td>';
+                                    echo '<td class="py-4 px-6 border-b text-gray-500">' . $row['cname'] . '</td>';
+                                    echo '</tr>';
+                                }
+                            }
+                            ?>
+
+                    </tbody>
+                </table>
+                <table class="text-left w-full border-collapse">
+                    <thead class="border-b">
+                        <tr>
                             <th class="py-3 px-5 bg-indigo-800 font-medium uppercase text-sm text-gray-100">Link</th>
                             <th class="py-3 px-5 bg-indigo-800 font-medium uppercase text-sm text-gray-100">Expiration</th>
                         </tr>
@@ -67,7 +96,11 @@
                         ?>
 
                     </tbody>
+
                 </table>
+
+
+
             </div>
         </div>
     </div>

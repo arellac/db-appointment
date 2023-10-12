@@ -71,7 +71,55 @@ if (isset($_GET['id'])) {
     
 <div class="min-h-screen flex justify-center items-center bg-[#FAF6F4]">
     <div class="max-w-3xl w-full">
+        <?php
+        $stmt = $database->prepare("SELECT sname,sid,image_url FROM stylist WHERE sid = ?");
+        $stmt->bind_param("i", $stylistId); // bind the integer parameter
+        $stmt->execute();
+        $result = $stmt->get_result();
         
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $stylist_name = $row['sname'];
+            echo '<div class=" flex pb-5 items-center justify-center">
+            <a class="flex items-center justify-center" href="stylist.php?id=' . $row['sid'] . '">' . '</a>
+            <img src="' . $row['image_url'] . '" class="w-56 h-56 object-cover rounded-lg  " alt="" />
+            </a>
+            </div>';
+            
+            
+            echo '<div class=" flex pb-5 items-center justify-center">
+                <span class="text-center">Stylist\'s Name: ' . $stylist_name . '</span>
+            </div>';
+
+        } else {
+            echo "No stylist found with the provided ID.";
+        }
+
+        $stmt = $database->prepare("SELECT s.service_name, s.id
+                                    FROM services s
+                                    JOIN stylist_services ss ON s.id = ss.service_id
+                                    WHERE ss.stylist_id = ?");
+        $stmt->bind_param("i", $stylistId);
+        $stmt->execute();
+    
+
+        echo '<ul class="flex justify-center items-center gap-x-4">';  // Open the ul tag outside the loop
+
+        $result = $stmt->get_result();
+        while ($row = $result->fetch_assoc()) {
+                echo '<li class="inline-flex items-center gap-x-2.5 py-3 px-4 text-sm font-medium bg-white border text-gray-800 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg sm:-ml-px sm:mt-0 sm:first:rounded-tr-none sm:first:rounded-bl-lg sm:last:rounded-bl-none sm:last:rounded-tr-lg dark:bg-gray-800 dark:border-gray-700 dark:text-white">
+                        <div class="relative flex items-start w-full">
+                            <div class="flex items-center h-5">
+                                <input value=' .$row['id'].' id="hs-horizontal-list-group-item-radio-1" name="hs-horizontal-list-group-item-radio" type="radio" class="border-gray-200 rounded-full dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800" checked>
+                            </div>
+                            <label for="hs-horizontal-list-group-item-radio-1" class="ml-3 block w-full text-sm text-gray-600 dark:text-gray-500">'
+                                . $row['service_name'] .
+                            '</label>
+                        </div>
+                    </li>';
+        }
+        echo '</ul>';
+        ?>
         <div id="confirmationModal" tabindex="-1" class="hidden fixed inset-0 flex items-center justify-center z-10">
         <div class="fixed inset-0 bg-black opacity-40"></div>
 
@@ -92,7 +140,10 @@ if (isset($_GET['id'])) {
                     </div>
                 </div>
         </div>
+
+        
         <div class="p-4 border-t mx-8 mt-2">
+            
             <div class="relative">
                 <!-- Calendar Carousel -->
                 <div class="carousel-container flex items-center justify-center relative overflow-hidden">
@@ -192,7 +243,7 @@ if (isset($_GET['id'])) {
     const dayCarousel = document.querySelector(".day-carousel");
     const hourCarousel = document.querySelector(".hour-carousel");
 
-    dayCarousel.addEventListener("click", (e) => {
+    dayCarousel.addEventListener("click", async (e) => {
         if (e.target.classList.contains("select-day")) {
             const selectedDayButton = e.target.closest(".select-day");
 
@@ -211,7 +262,7 @@ if (isset($_GET['id'])) {
         }
     });
 
-    function loadHours(selectedDate) {
+    async function loadHours(selectedDate) {
     // Clear the existing hours
     hourCarousel.innerHTML = '';
 
@@ -223,92 +274,135 @@ if (isset($_GET['id'])) {
         const timeSlot = new Date(startTime);
         const formattedTime = timeSlot.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-        // Create a clickable element for each time slot
-        const timeSlotElement = document.createElement('a');
-        timeSlotElement.href = '#'; // Add the link behavior you need
-        timeSlotElement.classList.add('block', 'bg-gray-100', 'p-2', 'rounded-lg', 'cursor-pointer', 'transition', 'hover:bg-gray-200', 'select-hour'); // Add 'select-hour' class
-        timeSlotElement.textContent = formattedTime;
 
-        // Append the time slot to the hour carousel
-        hourCarousel.appendChild(timeSlotElement);
+        if (await isAppointmentBooked(stylistId, selectedDate, formattedTime)) {
+            const timeSlotElement = document.createElement('button'); // Change this to a button element
+            timeSlotElement.type = 'button'; // Set the button type
+            timeSlotElement.classList.add('block', 'bg-gray-300', 'p-2', 'rounded-lg', 'cursor-not-allowed', 'select-hour'); // Add 'select-hour' class
+            timeSlotElement.textContent = formattedTime;
+            timeSlotElement.disabled = true;
+            hourCarousel.appendChild(timeSlotElement);
+        } else {
+            // Create a clickable element for each time slot
+            const timeSlotElement = document.createElement('a');
+            timeSlotElement.href = '#'; // Add the link behavior you need
+            timeSlotElement.classList.add('block', 'bg-gray-100', 'p-2', 'rounded-lg', 'cursor-pointer', 'transition', 'hover:bg-gray-200', 'select-hour'); // Add 'select-hour' class
+            timeSlotElement.textContent = formattedTime;
+            hourCarousel.appendChild(timeSlotElement);
+        }
 
+        
         // Increment the time slot by 1 hour
         startTime.setTime(startTime.getTime() + timeSlotInterval);
     }
-}
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
 
-        // Add a click event listener to each hour element
-        hourCarousel.addEventListener("click", (e) => {
-            if (e.target.classList.contains("select-hour")) {
-                const allHourButtons = document.querySelectorAll(".select-hour");
-                allHourButtons.forEach((button) => {
-                    button.classList.remove("bg-blue-800", "text-white");
+}
+    async function isAppointmentBooked(stylistId, selectedDate, selectedTime) {
+            // Make an API request to check if the appointment is booked
+            try {
+                const response = await fetch('check-appointment.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        stylistId: stylistId,
+                        date: selectedDate,
+                        time: selectedTime,
+                    }),
                 });
 
-                // Add the 'bg-blue-800' and 'text-white' classes to the clicked hour button
-                e.target.classList.add("bg-blue-800", "text-white");
-
-                const selectedHour = e.target.innerText;
-                openConfirmationModal(selectedDay, selectedHour);
+                if (response.ok) {
+                    const data = await response.json();
+                    return data.isBooked; // Assuming the response includes a boolean indicating if the slot is booked
+                } else {
+                    throw new Error('Failed to fetch appointment data');
+                }
+            } catch (error) {
+                console.error('Error checking appointment:', error);
+                return false; // Assume the slot is not booked in case of an error
             }
-        });
+        }
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Add a click event listener to each hour element
+    hourCarousel.addEventListener("click", (e) => {
+        if (e.target.classList.contains("select-hour")) {
+            const allHourButtons = document.querySelectorAll(".select-hour");
+            allHourButtons.forEach((button) => {
+                button.classList.remove("bg-blue-800", "text-white");
+            });
 
-        // Function to open the confirmation modal
-        function openConfirmationModal(selectedDay, selectedHour) {
-            const modal = document.getElementById("confirmationModal");
-            const confirmButton = document.getElementById("confirmButton");
-            const cancelButton = document.getElementById("cancelButton");
-            const selectedDayElement = document.getElementById("selectedDay");
-            const selectedHourElement = document.getElementById("selectedHour");
+            // Add the 'bg-blue-800' and 'text-white' classes to the clicked hour button
+            e.target.classList.add("bg-blue-800", "text-white");
 
-            // Set the selected day and hour in the modal
-            selectedDayElement.textContent = selectedDay;
-            selectedHourElement.textContent = selectedHour;
-
-            // Show the modal
-            modal.classList.remove("hidden");
-
-            // Handle confirmation button click
-            confirmButton.addEventListener("click", () => {
-
-
-        const data = {
-            selectedDay: selectedDay,
-            selectedHour: selectedHour,
-            stylistId: stylistId        
-        };
-
-        fetch('book.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        })
-        .then((response) => response.json())
-        .then((data) => {
-            console.log(data); // Log the server response
-            // Close the modal
-            modal.classList.add("hidden");
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
+            const selectedHour = e.target.innerText;
+            openConfirmationModal(selectedDay, selectedHour);
+        }
     });
 
-            cancelButton.addEventListener("click", () => {
+    // Function to open the confirmation modal
+    function openConfirmationModal(selectedDay, selectedHour) {
+        const modal = document.getElementById("confirmationModal");
+        const confirmButton = document.getElementById("confirmButton");
+        const cancelButton = document.getElementById("cancelButton");
+        const selectedDayElement = document.getElementById("selectedDay");
+        const selectedHourElement = document.getElementById("selectedHour");
+        const selectedService = document.querySelector('input[name="hs-horizontal-list-group-item-radio"]:checked').value;
+
+        // Set the selected day and hour in the modal
+        selectedDayElement.textContent = selectedDay;
+        selectedHourElement.textContent = selectedHour;
+
+        // Show the modal
+        modal.classList.remove("hidden");
+
+        // Handle confirmation button click
+        function onConfirmButtonClick() {
+            const data = {
+                selectedDay: selectedDay,
+                selectedHour: selectedHour,
+                stylistId: stylistId,
+                serviceId: selectedService // Include the selected service here
+            };
+
+            fetch('book.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data); // Log the server response
+                // Close the modal
                 modal.classList.add("hidden");
+                
+                // Remove the event listener to prevent duplicates
+                confirmButton.removeEventListener("click", onConfirmButtonClick);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
             });
         }
 
-        function closeModal() {
-            const modal = document.getElementById("confirmationModal");
+        confirmButton.addEventListener("click", onConfirmButtonClick);
+
+        cancelButton.addEventListener("click", () => {
             modal.classList.add("hidden");
-        }
-    });
+            // Remove the event listener to prevent duplicates
+            confirmButton.removeEventListener("click", onConfirmButtonClick);
+        });
+    }
+
+    function closeModal() {
+        const modal = document.getElementById("confirmationModal");
+        modal.classList.add("hidden");
+    }
+});
+
 </script>
 <script src="https://cdn.tailwindcss.com"></script>
 

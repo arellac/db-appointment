@@ -3,3 +3,4 @@
 2. Make a folder in "htdocs" directory with this source code
 3. Import the "db_project1.sql" file
 4. http://localhost/scheduler/login.php
+5. net stop MySQL80 

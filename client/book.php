@@ -30,9 +30,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $selectedDay = $data->selectedDay;
     $selectedHour = $data->selectedHour;
     $stylistId = $data->stylistId;
+    $serviceId = $data->serviceId;
 
 
-    $sql = "INSERT INTO appointment (pid, apponum, scheduleid, appodate, scheduletime, sid) VALUES (?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO appointment (pid, apponum, scheduleid, appodate, scheduletime, sid,service_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
     
 
     $pid = $userid; 
@@ -43,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $scheduletime = date("H:i:s", strtotime($selectedHour));
 
     $stmt = $database->prepare($sql);
-    $stmt->bind_param("iiisss", $pid, $apponum, $scheduleid, $appodate, $scheduletime, $stylistId);
+    $stmt->bind_param("iiissss", $pid, $apponum, $scheduleid, $appodate, $scheduletime, $stylistId,$serviceId);
     $result = $stmt->execute();
 
     if ($result) {

@@ -8,9 +8,18 @@
 
     <meta name="author" content="themesflat.com">
     <link rel="stylesheet" type="text/css" href="main.css" />
-
+    <link rel="stylesheet" href="../css/layout.css" />
+    <link rel="stylesheet" href="../css/nav.css" />
+    <link rel="stylesheet" href="../css/footer.css" />
+    <link rel="stylesheet" href="../css/hero.css" />
+    <link rel="stylesheet" href="../css/auction.css" />
+    <link rel="stylesheet" href="../css/item.css" />
+    <link rel="stylesheet" href="../css/profile.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        />
 
 
     <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
@@ -19,7 +28,7 @@
 </head>
 
 
-<body class="bg-[#FAF6F4] dark:bg-gray-900 relative">
+<main id="main">
   <?php 
       session_start();
 
@@ -35,7 +44,9 @@
       }
       
       include("../connection.php");
-      
+      include '../components/navbar.php';
+      include '../components/hero.php';
+
       $sqlmain= "select * from client where cemail=?";
       $stmt = $database->prepare($sqlmain);
       $stmt->bind_param("s",$useremail);
@@ -76,6 +87,7 @@
             </button>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-7 mt-7 mb-12 ">
+            
             <?php
 
               $result = $database->query("select * from stylist");
@@ -127,7 +139,9 @@
       </div>
     </div>
   </div>
-
+  <div id="scroll--top">
+            <i class="fa-solid fa-angle-up"></i>
+        </div>
   <script src="https://cdn.tailwindcss.com"></script>
 </body>
 

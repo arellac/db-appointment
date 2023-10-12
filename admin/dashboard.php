@@ -11,8 +11,7 @@
     <h1 >Dashboard</h1>
 
     <?php
-    // Include your database connection code here
-    // For example, you can include a config.php file with database connection details.
+
     session_start();
 
     if(isset($_SESSION["user"])){
@@ -25,13 +24,10 @@
     }
 
 
-    //import database
     include("../connection.php");
 
     try {
-        // Replace with your database connection details
 
-        // Execute the query
         $result = $database->query("select * from one_time_links");
 
         if ($result->num_rows > 0) {
@@ -50,7 +46,6 @@
         }
 
     } catch (PDOException $e) {
-        // Handle database errors
         echo "Database Error: " . $e->getMessage();
     }
 
