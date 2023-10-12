@@ -105,7 +105,7 @@
                                     type="text"
                                     name="salon_name"
                                     id="name"
-                                    placeholder="Trista Francis"
+                                    placeholder="name place"
                                     autocomplete="off"
                                 />
                             </div>
@@ -115,7 +115,7 @@
                                     type="text"
                                     name="image_url"
                                     id="url"
-                                    placeholder="Axies.Trista Francis.com/"
+                                    placeholder="placeholder"
                                     autocomplete="off"
                                 />
                             </div>
