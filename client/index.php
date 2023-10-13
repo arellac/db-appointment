@@ -53,11 +53,49 @@
       $stmt->execute();
       $userrow = $stmt->get_result();
       $userfetch=$userrow->fetch_assoc();
-      $userid= $userfetch["cid"];      
+      $userid= $userfetch["cid"];
+      
+      $query = "SELECT appointment.*, stylist.sname AS stylist_name 
+          FROM appointment 
+          JOIN stylist ON appointment.sid = stylist.sid 
+          WHERE appointment.pid = ? AND appointment.appodate >= CURDATE() 
+          ORDER BY appointment.appodate ASC";
+
+
+      // $query = "SELECT * FROM appointment WHERE pid = ? AND appodate >= CURDATE() ORDER BY appodate ASC";
+      $stmt = $database->prepare($query);
+      $stmt->bind_param("i", $userid);
+      $stmt->execute();
+
+      $result = $stmt->get_result();
+      $appointments = $result->fetch_all(MYSQLI_ASSOC);
   ?>
   <div style="z-index: 1000" class="bg-[#FAF6F4]" id="preloader">
     <div id="loader"></div>
   </div>
+
+  <?php if (count($appointments) > 0): ?>
+    <div class="bg-blue-100 border-t-4 border-blue-500 rounded-b text-blue-900 px-4 py-3 shadow-md m-4" role="alert">
+        <div class="flex">
+            <div class="py-1">
+                <svg class="fill-current h-6 w-6 text-blue-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <path d="M2 2v16h16V2H2zm4 4h3v3H6V6zm5 0h3v3h-3V6zM6 11h3v3H6v-3zm5 0h3v3h-3v-3zm-5 5h3v3H6v-3zm5 0h3v3h-3v-3zm5-10h3v3h-3V6zm0 5h3v3h-3v-3zm0 5h3v3h-3v-3z"/>
+                </svg>
+            </div>
+            <div>
+                <p class="font-bold">You have upcoming appointments:</p>
+                <ul>
+                    <?php foreach($appointments as $appointment): ?>
+                        <li class="text-sm mt-1">
+                            - <?php echo date("F j, Y, g:i a", strtotime($appointment['appodate'])); ?> with <?php echo $appointment['stylist_name']; ?>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        </div>
+    </div>
+  <?php endif; ?>
+
 
   <div class="bg-gray-25 dark:bg-gray-900 relative bg-[#FAF6F4]">
 
