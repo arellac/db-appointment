@@ -14,7 +14,8 @@
 </head>
 <body>
     <?php
-
+    error_reporting(E_ALL);
+    ini_set('display_errors', '1');
     //learn from w3schools.com
     //Unset all the server side variables
 
@@ -44,18 +45,18 @@
         
         $error='<label for="promter" class="form-label"></label>';
 
-        $result= $database->query("select * from webuser where email='$email'");
+        $result= $database->query("select * from members where m_email='$email'");
         if($result->num_rows==1){
-            $utype=$result->fetch_assoc()['usertype'];
-            if ($utype=='p'){
+            $utype=$result->fetch_assoc()['role'];
+            if ($utype=='C'){
                 //TODO
-                $checker = $database->query("select * from members where cemail='$email' and cpassword='$password'");
+                $checker = $database->query("select * from members where m_email='$email' and m_password='$password'");
                 if ($checker->num_rows==1){
 
 
                     //   client dashbord
                     $_SESSION['user']=$email;
-                    $_SESSION['usertype']='p';
+                    $_SESSION['usertype']='C';
                     
                     header('location: client/index.php');
 
@@ -63,15 +64,15 @@
                     $error='<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
                 }
 
-            }elseif($utype=='a'){
+            }elseif($utype=='A'){
                 //TODO
-                $checker = $database->query("select * from admin where aemail='$email' and apassword='$password'");
+                $checker = $database->query("select * from members where m_email='$email' and m_password='$password'");
                 if ($checker->num_rows==1){
 
 
                     //   Admin dashbord
                     $_SESSION['user']=$email;
-                    $_SESSION['usertype']='a';
+                    $_SESSION['usertype']='A';
                     
                     header('location: admin/home.php');
 
@@ -79,16 +80,16 @@
                     $error='<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
                 }
 
-            }elseif($utype=='d'){
+            }elseif($utype=='S'){
                 //TODO
-                $checker = $database->query("select * from stylist where semail='$email' and spassword='$password'");
+                $checker = $database->query("select * from members where m_email='$email' and m_password='$password'");
                 if ($checker->num_rows==1){
 
 
                     //   stylist dashbord
                     $_SESSION['user']=$email;
-                    $_SESSION['usertype']='d';
-                    header('location: stylist/edit_profile.php');
+                    $_SESSION['usertype']='S';
+                    header('location: stylist/dashboard.php');
 
                 }else{
                     $error='<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';

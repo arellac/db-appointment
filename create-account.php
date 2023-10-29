@@ -39,7 +39,7 @@ echo $_SESSION["usertype"];
 
 if($_POST){
 
-    $result= $database->query("select * from webuser");
+    $result= $database->query("select * from members");
 
     $fname=$_SESSION['personal']['fname'];
     $lname=$_SESSION['personal']['lname'];
@@ -48,9 +48,9 @@ if($_POST){
     $newpassword=$_POST['newpassword'];
     $cpassword=$_POST['cpassword'];
     $utype = $_SESSION["usertype"];
-    
+    $tele = "012";
     if ($newpassword==$cpassword){
-        $sqlmain= "select * from webuser where email=?;";
+        $sqlmain= "select * from members where m_email=?;";
         $stmt = $database->prepare($sqlmain);
         $stmt->bind_param("s",$email);
         $stmt->execute();
@@ -59,22 +59,23 @@ if($_POST){
             $error='<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Already have an account for this Email address.</label>';
         }else{
             //TODO
-            $database->query("insert into members(cemail,cname,cpassword, caddress, cnic,cdob,ctel) values('$email','$name','$newpassword','$address','$nic','$dob','$tele');");
+            $database->query("insert into members(m_email,m_number,m_name, m_password,role) values('$email','$tele','$name','$newpassword', '$utype');");
+            $lastInsertedId = $database->insert_id;
 
-            $database->query("insert into webuser values('$email','$utype')");
+            // $database->query("insert into webuser values('$email','$utype')");
             echo $_SESSION["usertype"];
 
             //print_r("insert into client values($pid,'$email','$fname','$lname','$newpassword','$address','$nic','$dob','$tele');");
             $_SESSION["user"]=$email;
             $_SESSION["username"]=$fname;
-            if($utype=='d'){
-                $database->query("insert into stylist(semail, sname, spassword) values('$email','$name','$newpassword');");
+            if($utype=='S'){
+                $database->query("insert into stylist(s_email, s_name) values('$email','$name');");
 
-                header('Location: stylist/index.php');
+                header('Location: stylist/dashboard.php');
                 
             }
-            elseif($utype=='p'){
-                $database->query("insert into client(cemail, cname, cpassword) values('$email','$name','$newpassword');");
+            elseif($utype=='C'){
+                $database->query("insert into client(c_id, c_email, c_name) values('$lastInsertedId','$email','$name');");
                 header('Location: client/index.php');
             }
             // header('Location: client/index.php');

@@ -35,7 +35,7 @@ if (isset($_GET['token'])) {
     if($result){
         if($result->num_rows > 0){
             echo "WORKED 1";
-            $_SESSION["usertype"]="d";
+            $_SESSION["usertype"]="S";
 
         }else{
             echo "WORKED";
@@ -49,7 +49,7 @@ if (isset($_GET['token'])) {
 
 }
 else{
-    $_SESSION["usertype"]="p";
+    $_SESSION["usertype"]="C";
 }
 
 echo $_SESSION["usertype"];

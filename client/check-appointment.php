@@ -33,7 +33,7 @@ function isAppointmentBooked($stylistId, $date, $time)
     // Sample query assuming you have a 'appointments' table with 'stylist_id', 'date', and 'time' columns
     include("../connection.php");
 
-    $query = "SELECT COUNT(*) AS count FROM appointment WHERE sid = ? AND appodate = ? AND scheduletime = ?";
+    $query = "SELECT COUNT(*) AS count FROM appointment WHERE s_id = ? AND scheduledate = ? AND scheduletime = ?";
     $stmt = $database->prepare($query);
     $stmt->bind_param("iss", $stylistId, $date, $time);
     $stmt->execute();

@@ -5,13 +5,13 @@ session_start();
 include("../connection.php");
 $useremail = $_SESSION["user"];
 
-$sqlmain = "SELECT * FROM stylist WHERE semail=?";
+$sqlmain = "SELECT * FROM stylist WHERE s_email=?";
 $stmt = $database->prepare($sqlmain);
 $stmt->bind_param("s", $useremail);
 $stmt->execute();
 $userrow = $stmt->get_result();
 $userfetch = $userrow->fetch_assoc();
-$userid = $userfetch["sid"];
+$userid = $userfetch["s_id"];
 
 // Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -21,10 +21,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $bindValues = [];
 
     // Get user input from the form
-    if (!empty($_POST['salon_name'])) {
+    if (!empty($_POST['sln_name'])) {
         $updateQuery .= "sln_name=?, ";
         $bindTypes .= "s";
-        $bindValues[] = $_POST['salon_name'];
+        $bindValues[] = $_POST['sln_name'];
     }
 
     if (!empty($_POST['image_url'])) {
@@ -33,10 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $bindValues[] = $_POST['image_url'];
     }
 
-    if (!empty($_POST['sname'])) {
-        $updateQuery .= "sname=?, ";
+    if (!empty($_POST['s_name'])) {
+        $updateQuery .= "s_name=?, ";
         $bindTypes .= "s";
-        $bindValues[] = $_POST['sname'];
+        $bindValues[] = $_POST['s_name'];
     }
 
     // Check if any fields were provided in the POST request
@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $updateQuery = rtrim($updateQuery, ', ');
 
         // Add the WHERE clause
-        $updateQuery .= " WHERE sid=?";
+        $updateQuery .= " WHERE s_id=?";
 
         // Append the user ID to the bind values and types
         $bindTypes .= "i";
@@ -58,14 +58,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bind_param($bindTypes, ...$bindValues);
 
         if ($stmt->execute()) {
-            // Profile updated successfully
-            // You can add a success message here if needed
-            // Redirect the user to their profile page
-            header('Location: profile.php');
-            exit();
+            echo "Profile updated successfully!";
         } else {
-            // Handle the update error
-            // You can add an error message here if needed
+            echo "Error updating profile.";
         }
     } else {
         // No non-empty fields provided in the POST request, no update required
@@ -74,5 +69,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Include your HTML template for the profile editing form
-include 'profile_edit_form.php'; // Adjust the path as needed
+// include 'dashboard.php'; // Adjust the path as needed
 ?>
