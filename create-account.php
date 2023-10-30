@@ -17,8 +17,7 @@
 <body>
 <?php
 
-//learn from w3schools.com
-//Unset all the server side variables
+
 
 session_start();
 
@@ -58,19 +57,15 @@ if($_POST){
         if($result->num_rows==1){
             $error='<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Already have an account for this Email address.</label>';
         }else{
-            //TODO
             $database->query("insert into members(m_email,m_number,m_name, m_password,role) values('$email','$tele','$name','$newpassword', '$utype');");
             $lastInsertedId = $database->insert_id;
 
-            // $database->query("insert into webuser values('$email','$utype')");
             echo $_SESSION["usertype"];
 
-            //print_r("insert into client values($pid,'$email','$fname','$lname','$newpassword','$address','$nic','$dob','$tele');");
             $_SESSION["user"]=$email;
             $_SESSION["username"]=$fname;
             if($utype=='S'){
-                $database->query("insert into stylist(s_email, s_name) values('$email','$name');");
-
+                $database->query("insert into stylist(s_id, s_email, s_name) values('$lastInsertedId','$email','$name');");
                 header('Location: stylist/dashboard.php');
                 
             }

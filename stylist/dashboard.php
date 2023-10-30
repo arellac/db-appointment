@@ -129,6 +129,10 @@
     $json_popular = json_encode($most_popular_service);
     $json_past = json_encode($past_appointments);
     $json_services = json_encode($services);
+    $json_user_info = json_encode($userfetch);
+    $stylistName = $userfetch["s_name"];
+    $slnName = $userfetch["sln_name"];
+    $stylistAddr = $userfetch["sln_address"];
 
     echo "<script>console.log($json_total_rev);</script>";
     echo "<script>console.log($json_total_app);</script>";
@@ -136,6 +140,7 @@
     echo "<script>console.log($json_popular);</script>";
     echo "<script>console.log($json_past);</script>";
     echo "<script>console.log($json_services);</script>";
+    echo "<script>console.log($json_user_info);</script>";
 
     ?>
 <!--
@@ -255,11 +260,104 @@ $(document).ready(function() {
     });
 });
 </script>
+<script>
+    $(document).ready(function() {
+    $('#deleteService').submit(function(e) {
+        e.preventDefault();
+        
+        $.ajax({
+            type: 'POST',
+            url: 'delete_service.php',
+            data: $('#deleteService').serialize(),
+            success: function(response) {
+                $('#response2').html(response).removeClass('hidden');
+            },
+            error: function() {
+                $('#response2').html('Error in request.');
+            }
+        });
+    });
+});
+</script>
+<script>
+    function editRow(buttonElement) {
+    let row = buttonElement.closest('tr');
+    
+    row.querySelector('.service-name-text').classList.add('hidden');
+    row.querySelector('.service-details-text').classList.add('hidden');
+    row.querySelector('.service-price-text').classList.add('hidden');
+    
+    row.querySelector('.service-name-input').classList.remove('hidden');
+    row.querySelector('.service-details-input').classList.remove('hidden');
+    row.querySelector('.service-price-input').classList.remove('hidden');
+    
+    buttonElement.classList.add('hidden');
+    row.querySelector('button[onclick^="saveChanges"]').classList.remove('hidden');
+}
+
+async function saveChanges(buttonElement, serviceId) {
+    let row = buttonElement.closest('tr');
+    
+    let serviceName = row.querySelector('.service-name-input').value;
+    let serviceDetails = row.querySelector('.service-details-input').value;
+    let servicePrice = row.querySelector('.service-price-input').value;
+
+    // Make an AJAX request to update the service in the database based on serviceId and the new values
+    let data = {
+        service_id: serviceId,
+        service_name: serviceName,
+        service_details: serviceDetails,
+        service_price: servicePrice
+    };
+    console.log(data);  // Handle the result here
+
+    try {
+        let response = await fetch('edit_service.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        let result = await response.json();
+        console.log(result);  // Handle the result here
+
+    } catch (error) {
+        console.error('Error:', error);
+    }
+
+    // On successful AJAX response:
+    row.querySelector('.service-name-text').textContent = serviceName;
+    row.querySelector('.service-details-text').textContent = serviceDetails;
+    row.querySelector('.service-price-text').textContent = '$ ' + servicePrice;
+    
+    row.querySelector('.service-name-text').classList.remove('hidden');
+    row.querySelector('.service-details-text').classList.remove('hidden');
+    row.querySelector('.service-price-text').classList.remove('hidden');
+    
+    row.querySelector('.service-name-input').classList.add('hidden');
+    row.querySelector('.service-details-input').classList.add('hidden');
+    row.querySelector('.service-price-input').classList.add('hidden');
+    
+    buttonElement.classList.add('hidden');
+    row.querySelector('button[onclick^="editRow"]').classList.remove('hidden');
+}
+
+</script>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <style>
     .tab-content:not(.active) {
         display: none;
     }
+    @font-face {
+        font-family: Geist;
+        src: url(../Geist-Regular.otf);
+    }
+    * {
+    font-family: Geist;
+    }
 </style>
+
 </html>

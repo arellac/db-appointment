@@ -27,10 +27,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $bindValues[] = $_POST['sln_name'];
     }
 
-    if (!empty($_POST['image_url'])) {
+    // Check if an image has been uploaded
+    if (isset($_FILES['image_url']) && $_FILES['image_url']['error'] == 0) {
+        $photo = fopen($_FILES['image_url']["tmp_name"], 'rb');
         $updateQuery .= "image_url=?, ";
-        $bindTypes .= "s";
-        $bindValues[] = $_POST['image_url'];
+        $bindTypes .= "b";  // Use 'b' for blob data
+        $bindValues[] = $photo; 
+        fclose($photo);
     }
 
     if (!empty($_POST['s_name'])) {
@@ -38,7 +41,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $bindTypes .= "s";
         $bindValues[] = $_POST['s_name'];
     }
-
+    if (!empty($_POST['sln_info'])) {
+        $updateQuery .= "sln_info=?, ";
+        $bindTypes .= "s";
+        $bindValues[] = $_POST['sln_info'];
+    }
+    if (!empty($_POST['sln_address'])) {
+        $updateQuery .= "sln_address=?, ";
+        $bindTypes .= "s";
+        $bindValues[] = $_POST['sln_address'];
+    }
     // Check if any fields were provided in the POST request
     if (!empty($bindValues)) {
         // Remove the trailing comma and space from the query
@@ -53,10 +65,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Prepare and execute the dynamic SQL query
         $stmt = $database->prepare($updateQuery);
-
+        if ($imageIndex = array_search("b", str_split($bindTypes))) {
+            $stmt->send_long_data($imageIndex, $bindValues[$imageIndex]);
+            unset($bindValues[$imageIndex]);
+        }
         // Bind values to the placeholders
         $stmt->bind_param($bindTypes, ...$bindValues);
-
+        echo $updateQuery;
+        echo "<br>";
+        var_dump($_FILES);
+        echo "<br>";
+        print_r($bindValues);
         if ($stmt->execute()) {
             echo "Profile updated successfully!";
         } else {

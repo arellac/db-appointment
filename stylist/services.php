@@ -14,16 +14,30 @@
                 </tr>
             </thead>
             <tbody>
+                
                 <?php foreach($services as $service): ?>
                     <tr>
-                        <td class="border px-4 py-2"> <?= htmlspecialchars($service['service_name']) ?> </td>
-                        <td class="border px-4 py-2"> <?= htmlspecialchars($service['service_details']) ?> </td>
-                        <td class="border px-4 py-2">$ <?= htmlspecialchars($service['service_price']) ?> </td>
                         <td class="border px-4 py-2">
-                            <!-- Button to remove the service -->
-                            <a href="edit_service.php?service_id=<?= $service['service_id'] ?>" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 mr-2">Edit</a>
-
-                            <form method="post" action="delete_service.php">
+                            <span class="service-name-text"><?= htmlspecialchars($service['service_name']) ?></span>
+                            <input type="text" class="service-name-input hidden" value="<?= htmlspecialchars($service['service_name']) ?>">
+                        </td>
+                        <td class="border px-4 py-2">
+                            <span class="service-details-text"><?= htmlspecialchars($service['service_details']) ?></span>
+                            <input type="text" class="service-details-input hidden" value="<?= htmlspecialchars($service['service_details']) ?>">
+                        </td>
+                        <td class="border px-4 py-2">
+                            <span class="service-price-text">$ <?= htmlspecialchars($service['service_price']) ?></span>
+                            <input type="number" class="service-price-input hidden" value="<?= htmlspecialchars($service['service_price']) ?>">
+                        </td>
+                        <td class="border px-4 py-2">
+                            <!-- Edit Button -->
+                            <button onclick="editRow(this)" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 mr-2">Edit</button>
+                            
+                            <!-- Save Button (Initially hidden) -->
+                            <button onclick="saveChanges(this, '<?= $service['service_id'] ?>')" class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 mr-2 hidden">Save</button>
+                            
+                            <!-- Delete button remains unchanged -->
+                            <form id="deleteService" method="post" action="delete_service.php">
                                 <input type="hidden" name="service_id" value="<?= $service['service_id'] ?>">
                                 <button type="submit" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">X</button>
                             </form>
@@ -39,6 +53,9 @@
                             <button type="submit" class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600">Add</button>
                         </td>
                     </form>
+                </tr>
+                <tr>
+                    
                 </tr>
             </tbody>
         </table>

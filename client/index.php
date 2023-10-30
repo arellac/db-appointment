@@ -102,6 +102,11 @@
 
               if ($result->num_rows > 0) {
                   while ($row = $result->fetch_assoc()) {
+                    $type = 'image/png';
+                    $base64 = base64_encode($row['image_url']);
+                    $dataURL = "data:$type;base64,$base64";
+
+
                     echo '<div class="group p-4 relative bg-[#FDFBFA] dark:bg-dark border border-gray-300 dark:border-gray-800 rounded-lg shadow-outline hover:shadow-hover hover:outline hover:outline-2 hover:outline-primary-300">';
                     echo '<form method="get" action="stylist.php" class="relative group">';
                     echo '<input type="hidden" name="id" value="' . $row['s_id'] . '">';
@@ -116,7 +121,7 @@
                     echo '</svg>';
                     echo '</button>';
                     echo '<a href="stylist.php?id=' . $row['s_id'] . '">' . '</a>';
-                    echo '<img src="' . $row['image_url'] . '" class="w-full h-56 object-cover rounded-lg mb-4 flex items-end justify-center" alt="" />';
+                    echo '<img src="' . $dataURL . '" class="w-full h-56 object-cover rounded-lg mb-4 flex items-end justify-center" alt="" />';
                     echo '</a>';
                     echo '<div class="flex items-center justify-between">';
                     echo '<div class="flex items-center">';

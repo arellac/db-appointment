@@ -89,36 +89,41 @@
   <section class="w-full py-12 md:py-16 lg:py-312">
   
   <div class="container mx-auto max-w-screen-xl flex items-start gap-8 px-4 md:px-6">
-    <!-- LEFT section: image -->
-    <!-- adjust width and height as needed -->
-    <!-- NaME -->
+
     
     <div class="space-y-6">
     <div class="breadcrumb">
     <?php
-        $stmt = $database->prepare("SELECT s_name,s_id,image_url FROM stylist WHERE s_id = ?");
-        $stmt->bind_param("i", $stylistId); // bind the integer parameter
+        $stmt = $database->prepare("SELECT s_name,s_id,image_url,sln_name FROM stylist WHERE s_id = ?");
+        $stmt->bind_param("i", $stylistId);
         $stmt->execute();
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
             $stylist_name = $row['s_name'];
+            $sln_name = $row['sln_name'];
+
             echo '<a class="text-gray-500" href="/db-project/client/index.php">Home</a> &gt; <a class="text-gray-500" href="/explore">Explore</a> &gt; ' . $stylist_name .'';
         }
     ?>
     </div>
-    <div class="flex items-center"> <!-- Changed to flex -->
+    <div class="flex items-center"> 
     
         <?php
             $stmt = $database->prepare("SELECT s_name,s_id,image_url FROM stylist WHERE s_id = ?");
-            $stmt->bind_param("i", $stylistId); // bind the integer parameter
+            $stmt->bind_param("i", $stylistId); 
             $stmt->execute();
             $result = $stmt->get_result();
 
             if ($result->num_rows > 0) {
                 $row = $result->fetch_assoc();
-                echo '<img src="' . $row['image_url'] . '" alt="image" class="object-cover rounded-full object-center w-16 h-16">';
+
+                $type = 'image/png'; 
+                $base64 = base64_encode($row['image_url']);
+                $dataURL = "data:$type;base64,$base64";
+
+                echo '<img src="' . $dataURL  . '" alt="image" class="object-cover rounded-full object-center w-16 h-16">';
             }
         ?>
 
@@ -127,7 +132,7 @@
             if ($result->num_rows > 0) {
                 $row = $result->fetch_assoc();
                 echo '<h1 class="text-4xl font-bold tracking-tighter">'.$stylist_name .'</h1>';
-                echo '<p class="text-lg text-gray-500">@'.$stylist_name .'</p>';
+                echo '<p class="text-lg text-gray-500">@'.$sln_name .'</p>';
             }
           ?>
       </div>
@@ -319,11 +324,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const monthLabel = document.querySelector('.month-bg-label');
 
     let currentIndex = 0;
-    const numVisibleDays = 14; // Change this to the desired number of visible days
+    const numVisibleDays = 14; 
 
     function updateDayVisibility() {
         const days = dayCarousel.children;
-        let mostVisibleDay = days[currentIndex]; // Using currentIndex to find the most visible day
+        let mostVisibleDay = days[currentIndex]; 
         if (mostVisibleDay) {
             const dateText = mostVisibleDay.dataset.date;
             const dateObj = new Date(dateText);
@@ -595,8 +600,8 @@ document.addEventListener('DOMContentLoaded', function() {
     font-family: Geist;
     }
     .active {
-        color: #ff6600; /* Change to any desired color for the active tab text */
-        border-bottom-color: #ff6600; /* Change to any desired color for the active tab border */
+        color: #ff6600; 
+        border-bottom-color: #ff6600;
     }
 </style>
 </body>

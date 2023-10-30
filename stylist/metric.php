@@ -47,7 +47,7 @@
                 <td class="border px-4 py-2"> <?= $appointment['c_name'] ?> </td>
                 <td class="border px-4 py-2"> <?= $appointment['service_name'] ?> </td>
                 <td class="border px-4 py-2"> $<?= $appointment['service_price'] ?> </td>
-                <td class="border px-4 py-2"> <?= $appointment['scheduledate'] ?> </td>
+                <td class="border px-4 py-2"> <?= $appointment['scheduledate']?> @ <?=$appointment['scheduletime']  ?> </td>
                 <td class="border px-4 py-2"> <?= ($appointment['payment_method'] == 0) ? 'In-Store' : 'Card' ?> </td>
                 <td class="border px-4 py-2">
                   <button class="inline-flex items-center justify-center ..."> Confirm </button>
