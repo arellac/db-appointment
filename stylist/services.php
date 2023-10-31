@@ -37,7 +37,7 @@
                             <button onclick="saveChanges(this, '<?= $service['service_id'] ?>')" class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 mr-2 hidden">Save</button>
                             
                             <!-- Delete button remains unchanged -->
-                            <form id="deleteService" method="post" action="delete_service.php">
+                            <form id="deleteService" method="post" action="api/delete_service.php">
                                 <input type="hidden" name="service_id" value="<?= $service['service_id'] ?>">
                                 <button type="submit" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">X</button>
                             </form>
@@ -45,7 +45,7 @@
                     </tr>
                 <?php endforeach; ?>
                 <tr>
-                    <form id="serviceForm" method="post" action="add_service.php">
+                    <form id="serviceForm" method="post" action="api/add_service.php">
                         <td class="border px-4 py-2"><input type="text" name="service_name" placeholder="Enter Service Name" required></td>
                         <td class="border px-4 py-2"><input type="text" name="service_details" placeholder="Enter Service Details" required></td>
                         <td class="border px-4 py-2"><input type="number" name="service_price" placeholder="Enter Price" required></td>

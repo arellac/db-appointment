@@ -10,7 +10,7 @@
     <title>Sign Up</title>
     
 </head>
-<body>
+<body style="background-color: #FAF6F4;">
 <?php
 
 //learn from w3schools.com
@@ -27,6 +27,7 @@ $date = date('Y-m-d');
 
 $_SESSION["date"]=$date;
 include("connection.php");
+include './components/nav.php';
 
 
 if (isset($_GET['token'])) {
@@ -80,15 +81,13 @@ if($_POST){
     <center>
         <div class="__layout">
              
-    <div class="text-black flex items-start md:items-center justify-center min-h-screen bg-image px-4 py-8 md:pt-0 bg-[#FAF6F4]">
+    <div class="text-black flex items-start md:items-center justify-center h-auto mt-10 bg-image px-4 py-8 md:pt-0 bg-[#FAF6F4]">
         <div class="flex items-center justify-center flex-col">
-            <img src="./css/hair_logo.png" alt="Company Logo" width="100" height="100">
             <div class="flex items-start content-start justify-start h-full overflow-hidden bg-white rounded-lg shadow card mt-4 rounded-lg shadow max-w-md p-8 w-full">
                 <div class="w-full">
                     <div class="text-center w-full min-w-[300px]">
-                        <h2 class="font-medium text-xl">
-                            Log in or sign up in seconds
-                        </h2>
+                        <h1 class="text-lg font-bold border p-2">BookLook</h1>
+
                         <p class="text-sm text-gray-700 mb-4">
                             Login or create an account to get started
                         </p>
@@ -104,10 +103,10 @@ if($_POST){
             </tr>
             <tr>
                 <td class="relative rounded-md shadow-sm">
-                    <input type="text" name="fname" class="form-input block w-full rounded border p-2 sm:text-sm sm:leading-5 border-black/20 opacity-100 bg-dark/10 border-black/20 text-black" placeholder="First Name" required>
+                    <input type="text" name="fname" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" placeholder="First Name" required>
                 </td>
                 <td class="relative rounded-md shadow-sm">
-                    <input type="text" name="lname" class="form-input block w-full rounded border p-2 sm:text-sm sm:leading-5 border-black/20 opacity-100 bg-dark/10 border-black/20 text-black" placeholder="Last Name" required>
+                    <input type="text" name="lname" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" placeholder="Last Name" required>
                 </td>
             </tr>
 
@@ -121,7 +120,7 @@ if($_POST){
                 <td colspan="2">
                     <br>
                     <div>
-                        <input type="submit" value="Next" class="inline-flex w-full items-center justify-center rounded-md border border-transparent bg-[#1B145D] px-6 py-4 text-sm font-bold text-white transition-all duration-200 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2">
+                        <input type="submit" value="Next" class="inline-flex w-full items-center justify-center rounded-md border border-transparent bg-black px-6 py-4 text-sm font-bold text-white transition-all duration-200 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2">
 
                     </div> 
                     <br>

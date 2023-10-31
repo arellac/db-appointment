@@ -23,7 +23,7 @@ $stmt->bind_param("s",$useremail);
 $stmt->execute();
 $userrow = $stmt->get_result();
 $userfetch=$userrow->fetch_assoc();
-$userid= 7;
+$userid = $userfetch["c_id"];
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $data = json_decode(file_get_contents("php://input"));
@@ -38,8 +38,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
 
     $pid = $userid; 
-    $apponum = 1; 
-    $scheduleid = 1; 
     
     $appodate = date("Y-m-d", strtotime($selectedDay));
     $scheduletime = date("H:i:s", strtotime($selectedHour));

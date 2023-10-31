@@ -19,10 +19,10 @@
 </head>
 
 
-<main id="main">
+<body id="main" style="background-color: #FAF6F4;">
   <?php 
       session_start();
-      include("../connection.php");
+      include("connection.php");
 
       if(isset($_SESSION["user"])){
           if(($_SESSION["user"])=="" or $_SESSION['usertype']!='C'){
@@ -40,7 +40,7 @@
       
       }
       
-      include '../components/nav.php';
+      include './components/nav.php';
       // include '../components/hero.php';
 
 
@@ -78,7 +78,7 @@
                 <ul>
                     <?php foreach($appointments as $appointment): ?>
                         <li class="text-sm mt-1">
-                            - <?php echo date("F j, Y, g:i a", strtotime($appointment['scheduledate'])); ?> with <?php echo $appointment['stylist_name']; ?>
+                            - <?= date("F j, Y", strtotime($appointment['scheduledate'])); ?> @ <?=$appointment['scheduletime']  ?> with <?php echo $appointment['stylist_name']; ?>
                         </li>
                     <?php endforeach; ?>
                 </ul>
@@ -108,7 +108,7 @@
 
 
                     echo '<div class="group p-4 relative bg-[#FDFBFA] dark:bg-dark border border-gray-300 dark:border-gray-800 rounded-lg shadow-outline hover:shadow-hover hover:outline hover:outline-2 hover:outline-primary-300">';
-                    echo '<form method="get" action="stylist.php" class="relative group">';
+                    echo '<form method="get" action="./client/stylist.php" class="relative group">';
                     echo '<input type="hidden" name="id" value="' . $row['s_id'] . '">';
                     
                     echo '<button class="opacity-0 group-hover:opacity-100 absolute top-7 left-7 px-4 py-1 rounded-md font-light text-base flex items-center justify-center bg-orange-500 text-white hover:bg-orange-600 transition-all duration-200 z-10"> Book </button>';
@@ -120,7 +120,7 @@
                     echo '<path d="M0 6.71134V6.50744C0 4.05002 1.77609 1.954 4.19766 1.55041C5.76914 1.28357 7.43203 1.80599 8.57812 2.95384L9 3.37502L9.39023 2.95384C10.568 1.80599 12.1992 1.28357 13.8023 1.55041C16.2246 1.954 18 4.05002 18 6.50744V6.71134C18 8.17033 17.3953 9.56603 16.3266 10.561L9.97383 16.4918C9.71016 16.7379 9.36211 16.875 9 16.875C8.63789 16.875 8.28984 16.7379 8.02617 16.4918L1.67309 10.561C0.605742 9.56603 1.05469e-05 8.17033 1.05469e-05 6.71134H0Z" fill="#585C7B" />';
                     echo '</svg>';
                     echo '</button>';
-                    echo '<a href="stylist.php?id=' . $row['s_id'] . '">' . '</a>';
+                    echo '<a href="client/stylist.php?id=' . $row['s_id'] . '">' . '</a>';
                     echo '<img src="' . $dataURL . '" class="w-full h-56 object-cover rounded-lg mb-4 flex items-end justify-center" alt="" />';
                     echo '</a>';
                     echo '<div class="flex items-center justify-between">';
@@ -156,6 +156,16 @@
             <i class="fa-solid fa-angle-up"></i>
         </div>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @font-face {
+        font-family: Geist;
+        src: url(./Geist-Regular.otf);
+    }
+    * {
+    font-family: Geist;
+    }
+
+</style>
 </body>
 
 

@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-include("../connection.php");
+include("../../connection.php");
 $useremail = $_SESSION["user"];
 
 $sqlmain = "SELECT * FROM stylist WHERE s_email=?";

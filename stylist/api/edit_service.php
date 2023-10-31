@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-include("../connection.php");
+include("../../connection.php");
 $useremail = $_SESSION["user"];
 
 // Initialize the response array

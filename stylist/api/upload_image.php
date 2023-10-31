@@ -1,11 +1,20 @@
 <?php
    // check if an image file was uploaded
-   include("../connection.php");
+   session_start();
 
-   $userid = 8;
+   include("../../connection.php");
+   $useremail = $_SESSION["user"];
+   
+   $sqlmain = "SELECT * FROM stylist WHERE s_email=?";
+   $stmt = $database->prepare($sqlmain);
+   $stmt->bind_param("s", $useremail);
+   $stmt->execute();
+   $userrow = $stmt->get_result();
+   $userfetch = $userrow->fetch_assoc();
+   $userid = $userfetch["s_id"];
+   
    if (isset($_FILES['image_url']) && $_FILES['image_url']['error'] == 0) {
         $imageInfo = getimagesize($_FILES['image_url']['tmp_name']);
-        var_dump($imageInfo);
 
 
        $stmt = $database->prepare("UPDATE stylist SET image_url=? WHERE s_id=?");

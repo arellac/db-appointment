@@ -99,6 +99,8 @@
     while ($row = $result->fetch_assoc()) {
         $services[] = $row;
     }
+    date_default_timezone_set('America/Chicago');
+
     // Closest Appointment
     if (!empty($upcoming_appointments)) {
         // 1. Check the first element for the soonest appointment
@@ -248,7 +250,7 @@ $(document).ready(function() {
         
         $.ajax({
             type: 'POST',
-            url: 'add_service.php',
+            url: 'api/add_service.php',
             data: $('#serviceForm').serialize(),
             success: function(response) {
                 $('#response2').html(response).removeClass('hidden');
@@ -267,7 +269,7 @@ $(document).ready(function() {
         
         $.ajax({
             type: 'POST',
-            url: 'delete_service.php',
+            url: 'api/delete_service.php',
             data: $('#deleteService').serialize(),
             success: function(response) {
                 $('#response2').html(response).removeClass('hidden');
@@ -312,7 +314,7 @@ async function saveChanges(buttonElement, serviceId) {
     console.log(data);  // Handle the result here
 
     try {
-        let response = await fetch('edit_service.php', {
+        let response = await fetch('api/edit_service.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -12,7 +12,7 @@
     
     
 </head>
-<body>
+<body style="background-color: #FAF6F4;">
     <?php
     error_reporting(E_ALL);
     ini_set('display_errors', '1');
@@ -33,6 +33,7 @@
 
     //import database
     include("connection.php");
+    include './components/nav.php';
 
     
 
@@ -58,7 +59,7 @@
                     $_SESSION['user']=$email;
                     $_SESSION['usertype']='C';
                     
-                    header('location: client/index.php');
+                    header('location: ./index.php');
 
                 }else{
                     $error='<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
@@ -113,83 +114,63 @@
 
     ?>
 
-
-
-
-
     <center>
-    <div class="__layout">
-             
-             <div class="text-black flex items-start md:items-center justify-center min-h-screen bg-image px-4 py-8 md:pt-0 bg-[#FAF6F4]">
-                 <div class="flex items-center justify-center flex-col">
-                    <img src="./css/hair_logo.png" alt="Company Logo" width="100" height="100">
-                    <div class="flex items-start content-start justify-start h-full overflow-hidden bg-white rounded-lg shadow card mt-4 rounded-lg shadow max-w-md p-8 w-full">
-                     <div class="w-full">
-                             <div class=" w-full min-w-[300px]">
-                             <h2 class="font-medium text-xl">
-                             Welcome Back!                        </h2>
-                        <p class="text-sm text-gray-700 mb-4">
-                        Login with your details to continue                        </p>
-                        <div class="w-full">
-                            <div>
-
-        <table class="space-y-6">
-
-            <div class="space-y-5 text-left">
-                <form action="" method="POST" >
-
-                <div class="mb-4">
-                    <label for="useremail" class="block text-base font-medium text-gray-900">Email: </label>
-                    <div class="relative mt-2.5 text-gray-600 focus-within:text-gray-400">
-                        <input type="email" name="useremail" class="block w-full rounded-md border border-gray-200 bg-gray-50 py-4 pl-10 pr-4 text-black placeholder-gray-500 caret-blue-600 transition-all duration-200 focus:border-blue-600 focus:bg-white focus:outline-none" placeholder="Email Address" required>
-                    </div>
-                </div>
-
-                <div class="mb-4">
-                    <label for="userpassword" class="block text-base font-medium text-gray-900">Password: </label>
-                    <div class="relative mt-2.5 text-gray-600 focus-within:text-gray-400">
-                        <input type="Password" name="userpassword" class="block w-full rounded-md border border-gray-200 bg-gray-50 py-4 pl-10 pr-4 text-black placeholder-gray-500 caret-blue-600 transition-all duration-200 focus:border-blue-600 focus:bg-white focus:outline-none" placeholder="Password" required>
-                    </div>
-                </div>
-
-                <tr>
-                    <td class="mb-4">
-                    <?php echo $error ?>
-                    </td>
-                </tr>
-                <tr>
-                <td colspan="2">
-                        <br>
-                        <div>
-                            <input type="submit" value="Login" class="inline-flex w-full items-center justify-center rounded-md border border-transparent bg-[#1B145D] px-6 py-4 text-sm font-bold text-white transition-all duration-200 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2">
+      <div class="__layout">
+        <div class="text-black flex items-start md:items-center justify-center h-auto mt-10 bg-image px-4 py-8 md:pt-0 bg-[#FAF6F4]">
+          <div class="flex items-center justify-center flex-col">
+            <!-- <h1 class="text-lg font-bold border p-2">BookLook</h1> -->
+            <div class="flex items-start content-start justify-start h-full overflow-hidden bg-white rounded-lg shadow card mt-4 rounded-lg shadow max-w-md p-8 w-full">
+              <div class="w-full">
+                <div class=" w-full min-w-[300px]">
+                <h1 class="text-lg font-bold border p-2">BookLook</h1>
+                  <p class="text-sm text-gray-700 mb-4 mt-2"> Login with your details to continue </p>
+                  <div class="w-full">
+                    <div>
+                      <table class="space-y-6">
+                        <div class="space-y-5 text-left">
+                          <form action="" method="POST">
+                            <div class="mb-4">
+                              <label for="useremail" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Email: </label>
+                              <div class="relative mt-2.5 text-gray-600 focus-within:text-gray-400">
+                                <input type="email" name="useremail" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" placeholder="Email Address" required>
+                              </div>
+                            </div>
+                            <div class="mb-4">
+                              <label for="userpassword" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Password: </label>
+                              <div class="relative mt-2.5 text-gray-600 focus-within:text-gray-400">
+                                <input type="Password" name="userpassword" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" placeholder="Password" required>
+                              </div>
+                            </div>
+                            <tr>
+                              <td class="mb-4"> <?php echo $error ?> </td>
+                            </tr>
+                            <tr>
+                              <td colspan="2">
+                                <br>
+                                <div>
+                                  <input type="submit" value="Login" class="inline-flex w-full items-center justify-center rounded-md border border-transparent bg-black px-6 py-4 text-sm font-bold text-white transition-all duration-200 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2">
+                                </div>
+                                </br>
+                                <label for="" class="sub-text" style="font-weight: 280; ">Don't have an account&#63; </label>
+                                <a href="signup.php" class="hover-link1 non-style-link text-orange-500	">Sign Up</a>
+                                <br>
+                                <br>
+                                <br>
+                              </td>
+                            </tr>
+                          </form>
                         </div>
-                        </br>
-                        <label for="" class="sub-text" style="font-weight: 280; ">Don't have an account&#63; </label>
-                        <a href="signup.php" class="hover-link1 non-style-link text-orange-500	">Sign Up</a>
-                        <br><br><br>
-                </td>
-            </tr>    
-                </form>
-
-            </div>
-        
-
-                        
-   
-    
-                        
-        </table>
-
-        </div>
-                        </div>
+                      </table>
                     </div>
+                  </div>
                 </div>
+              </div>
             </div>
+          </div>
         </div>
+    </center>
 
 
-    </div>
-</center>
 <script src="https://cdn.tailwindcss.com"></script>
 
 </body>

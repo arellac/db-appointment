@@ -104,7 +104,7 @@
             $stylist_name = $row['s_name'];
             $sln_name = $row['sln_name'];
 
-            echo '<a class="text-gray-500" href="/db-project/client/index.php">Home</a> &gt; <a class="text-gray-500" href="/explore">Explore</a> &gt; ' . $stylist_name .'';
+            echo '<a class="text-gray-500" href="/db-project/index.php">Home</a>  &gt; ' . $stylist_name .'';
         }
     ?>
     </div>
@@ -231,7 +231,7 @@
               <!-- html for the day carousel -->
               <div class="day-carousel-container flex items-center justify-center overflow-x-auto space-x-2">
                 <div class="day-carousel flex overflow-x-hidden  rounded-lg p-2 space-x-2"> <?php
-                                    date_default_timezone_set('asia/Kolkata');
+                                    date_default_timezone_set('America/Chicago');
                                     $today = strtotime('today');
                                     $fourWeeksLater = strtotime('+4 weeks', $today);
                                     $prevMonth = date('M', $today);

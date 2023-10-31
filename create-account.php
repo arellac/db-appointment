@@ -33,6 +33,7 @@ $_SESSION["date"]=$date;
 
 //import database
 include("connection.php");
+include './components/nav.php';
 
 echo $_SESSION["usertype"];
 
@@ -96,16 +97,13 @@ if($_POST){
     <center>
     <div class="__layout">
              
-             <div class="text-black flex items-start md:items-center justify-center min-h-screen bg-image px-4 py-8 md:pt-0 bg-[#FAF6F4]">
+             <div class="text-black flex items-start md:items-center justify-center h-auto	mt-10 bg-image px-4 py-8 md:pt-0 bg-[#FAF6F4]">
                  <div class="flex items-center justify-center flex-col">
-                 <img src="./css/hair_logo.png" alt="Company Logo" width="100" height="100">
-
+                 <h1 class="text-lg font-bold border p-2 bg-white border-[#ff8100]">BookLook</h1>
                      <div class="flex items-start content-start justify-start h-full overflow-hidden bg-white rounded-lg shadow card mt-4 rounded-lg shadow max-w-md p-8 w-full">
                      <div class="w-full">
                              <div class="text-center w-full min-w-[300px]">
-                             <h2 class="font-medium text-xl">
-                            Log in or sign up in seconds
-                        </h2>
+
                         <p class="text-sm text-gray-700 mb-4">
                             Login or create an account to get started
                         </p>
@@ -154,7 +152,7 @@ if($_POST){
                 <td colspan="2">
                     <br>
                     <div>
-                        <input type="submit" value="Sign Up" class="inline-flex w-full items-center justify-center rounded-md border border-transparent bg-[#1B145D] px-6 py-4 text-sm font-bold text-white transition-all duration-200 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2">
+                        <input type="submit" value="Sign Up" class="inline-flex w-full items-center justify-center rounded-md border border-transparent bg-black px-6 py-4 text-sm font-bold text-white transition-all duration-200 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2">
 
                     </div> 
                     <br>

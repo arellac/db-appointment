@@ -2,7 +2,7 @@
 // Start a session (if not already started)
 session_start();
 
-include("../connection.php");
+include("../../connection.php");
 $useremail = $_SESSION["user"];
 
 $sqlmain = "SELECT * FROM stylist WHERE s_email=?";
@@ -71,11 +71,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         // Bind values to the placeholders
         $stmt->bind_param($bindTypes, ...$bindValues);
-        echo $updateQuery;
-        echo "<br>";
-        var_dump($_FILES);
-        echo "<br>";
-        print_r($bindValues);
+        // echo $updateQuery;
+        // echo "<br>";
+        // var_dump($_FILES);
+        // echo "<br>";
+        // print_r($bindValues);
         if ($stmt->execute()) {
             echo "Profile updated successfully!";
         } else {
