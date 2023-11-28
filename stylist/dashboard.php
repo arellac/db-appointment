@@ -1,3 +1,141 @@
+<?php
+
+session_start();
+
+include("../connection.php");
+$useremail = $_SESSION["user"];
+
+
+$sqlmain = "SELECT * FROM stylist WHERE s_email=?";
+$stmt = $database->prepare($sqlmain);
+$stmt->bind_param("s", $useremail);
+$stmt->execute();
+$userrow = $stmt->get_result();
+$userfetch = $userrow->fetch_assoc();
+$stylistId = $userfetch["s_id"];
+
+// 1. Total Revenue
+$query1 = "SELECT SUM(s.service_price) AS total_revenue
+            FROM appointment a 
+            JOIN services s ON a.service_id = s.service_id
+            WHERE a.s_id = ?";
+$stmt1 = $database->prepare($query1);
+$stmt1->bind_param("i", $stylistId);
+$stmt1->execute();
+$result = $stmt1->get_result();
+$row = $result->fetch_assoc();
+$total_revenue = $row['total_revenue'];
+
+// 2. Total Appointments Made
+$query2 = "SELECT COUNT(*) AS total_appointments FROM appointment WHERE s_id = ?";
+$stmt = $database->prepare($query2);
+$stmt->bind_param("i", $stylistId);
+$stmt->execute();
+$result = $stmt->get_result();
+$total_appointments = $result->fetch_assoc();
+
+// 3. Upcoming Appointments
+$query3 = "
+SELECT 
+    a.appoid, a.c_id, c.c_name, a.scheduledate, a.scheduletime, 
+    a.service_id, s.service_name, s.service_price, a.payment_method
+FROM appointment a
+LEFT JOIN services s ON a.service_id = s.service_id
+LEFT JOIN client c ON a.c_id = c.c_id
+WHERE a.s_id = ? AND a.scheduledate >= CURRENT_DATE
+ORDER BY a.scheduledate, a.scheduletime
+";
+$stmt3 = $database->prepare($query3);
+$stmt3->bind_param("i", $stylistId);
+$stmt3->execute();
+$result = $stmt3->get_result();
+$upcoming_appointments = $result->fetch_all(MYSQLI_ASSOC);
+
+// 4. Most Popular Appointment
+$query4 = "SELECT service_id, COUNT(*) AS service_count
+            FROM appointment 
+            WHERE s_id = ?
+            GROUP BY service_id
+            ORDER BY service_count DESC
+            LIMIT 1";
+$stmt4 = $database->prepare($query4);
+$stmt4->bind_param("i", $stylistId);
+$stmt4->execute();
+$result = $stmt4->get_result();
+$most_popular_service = $result->fetch_assoc();
+
+// 5. Past Appointments
+$query5 = "SELECT appoid, c_id, scheduledate, scheduletime, service_id, payment_method
+        FROM appointment
+        WHERE s_id = ? AND scheduledate < CURRENT_DATE
+        ORDER BY scheduledate DESC, scheduletime DESC";
+$stmt5 = $database->prepare($query5);
+$stmt5->bind_param("i", $stylistId);
+$stmt5->execute();
+$result = $stmt5->get_result();
+$past_appointments = $result->fetch_all(MYSQLI_ASSOC);
+
+// 6. Services
+$query = "SELECT s.service_id AS service_id, s.service_name, s.service_price, s.service_details
+            FROM stylist_services ss
+            JOIN services s ON ss.service_id = s.service_id
+            WHERE ss.s_id = ?";
+$stmt = $database->prepare($query);
+$stmt->bind_param("i", $stylistId);
+$stmt->execute();
+$result = $stmt->get_result();
+
+$services = [];
+while ($row = $result->fetch_assoc()) {
+    $services[] = $row;
+}
+date_default_timezone_set('America/Chicago');
+
+// Closest Appointment
+if (!empty($upcoming_appointments)) {
+    // 1. Check the first element for the soonest appointment
+    $soonest_appointment = $upcoming_appointments[0];
+
+    // Extract date and time
+    $appoDate = new DateTime($soonest_appointment['scheduledate'] . ' ' . $soonest_appointment['scheduletime']);
+    $now = new DateTime();
+
+    // 2. Calculate the time difference
+    $interval = $now->diff($appoDate);
+    $hours = $interval->h;
+    $hours = $hours + ($interval->days * 24); // Convert days to hours
+
+    // 3. Store the result in a variable
+    if ($interval->days > 0) {
+        $appointment_time_difference = "in " . $interval->days . " days";
+    } else {
+        $appointment_time_difference = "in " . $hours . " hours";
+    }
+} else {
+    $appointment_time_difference = "No upcoming appointments";
+}
+
+$json_total_app = json_encode($total_appointments);
+$json_total_rev = json_encode($total_revenue);
+$json_upcoming = json_encode($upcoming_appointments);
+$json_popular = json_encode($most_popular_service);
+$json_past = json_encode($past_appointments);
+$json_services = json_encode($services);
+$json_user_info = json_encode($userfetch);
+$stylistName = $userfetch["s_name"];
+$slnName = $userfetch["sln_name"];
+$stylistAddr = $userfetch["sln_address"];
+
+echo "<script>console.log($json_total_rev);</script>";
+echo "<script>console.log($json_total_app);</script>";
+echo "<script>console.log($json_upcoming);</script>";
+echo "<script>console.log($json_popular);</script>";
+echo "<script>console.log($json_past);</script>";
+echo "<script>console.log($json_services);</script>";
+echo "<script>console.log($json_user_info);</script>";
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,143 +146,7 @@
 
 </head>
 <body>
-    <?php
 
-    session_start();
-
-    include("../connection.php");
-    $useremail = $_SESSION["user"];
-
-
-    $sqlmain = "SELECT * FROM stylist WHERE s_email=?";
-    $stmt = $database->prepare($sqlmain);
-    $stmt->bind_param("s", $useremail);
-    $stmt->execute();
-    $userrow = $stmt->get_result();
-    $userfetch = $userrow->fetch_assoc();
-    $stylistId = $userfetch["s_id"];
-
-    // 1. Total Revenue
-    $query1 = "SELECT SUM(s.service_price) AS total_revenue
-                FROM appointment a 
-                JOIN services s ON a.service_id = s.service_id
-                WHERE a.s_id = ?";
-    $stmt1 = $database->prepare($query1);
-    $stmt1->bind_param("i", $stylistId);
-    $stmt1->execute();
-    $result = $stmt1->get_result();
-    $row = $result->fetch_assoc();
-    $total_revenue = $row['total_revenue'];
-
-    // 2. Total Appointments Made
-    $query2 = "SELECT COUNT(*) AS total_appointments FROM appointment WHERE s_id = ?";
-    $stmt = $database->prepare($query2);
-    $stmt->bind_param("i", $stylistId);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $total_appointments = $result->fetch_assoc();
-
-    // 3. Upcoming Appointments
-    $query3 = "
-    SELECT 
-        a.appoid, a.c_id, c.c_name, a.scheduledate, a.scheduletime, 
-        a.service_id, s.service_name, s.service_price, a.payment_method
-    FROM appointment a
-    LEFT JOIN services s ON a.service_id = s.service_id
-    LEFT JOIN client c ON a.c_id = c.c_id
-    WHERE a.s_id = ? AND a.scheduledate >= CURRENT_DATE
-    ORDER BY a.scheduledate, a.scheduletime
-";
-    $stmt3 = $database->prepare($query3);
-    $stmt3->bind_param("i", $stylistId);
-    $stmt3->execute();
-    $result = $stmt3->get_result();
-    $upcoming_appointments = $result->fetch_all(MYSQLI_ASSOC);
-
-    // 4. Most Popular Appointment
-    $query4 = "SELECT service_id, COUNT(*) AS service_count
-                FROM appointment 
-                WHERE s_id = ?
-                GROUP BY service_id
-                ORDER BY service_count DESC
-                LIMIT 1";
-    $stmt4 = $database->prepare($query4);
-    $stmt4->bind_param("i", $stylistId);
-    $stmt4->execute();
-    $result = $stmt4->get_result();
-    $most_popular_service = $result->fetch_assoc();
-
-    // 5. Past Appointments
-    $query5 = "SELECT appoid, c_id, scheduledate, scheduletime, service_id, payment_method
-            FROM appointment
-            WHERE s_id = ? AND scheduledate < CURRENT_DATE
-            ORDER BY scheduledate DESC, scheduletime DESC";
-    $stmt5 = $database->prepare($query5);
-    $stmt5->bind_param("i", $stylistId);
-    $stmt5->execute();
-    $result = $stmt5->get_result();
-    $past_appointments = $result->fetch_all(MYSQLI_ASSOC);
-
-    // 6. Services
-    $query = "SELECT s.service_id AS service_id, s.service_name, s.service_price, s.service_details
-                FROM stylist_services ss
-                JOIN services s ON ss.service_id = s.service_id
-                WHERE ss.s_id = ?";
-    $stmt = $database->prepare($query);
-    $stmt->bind_param("i", $stylistId);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    $services = [];
-    while ($row = $result->fetch_assoc()) {
-        $services[] = $row;
-    }
-    date_default_timezone_set('America/Chicago');
-
-    // Closest Appointment
-    if (!empty($upcoming_appointments)) {
-        // 1. Check the first element for the soonest appointment
-        $soonest_appointment = $upcoming_appointments[0];
-    
-        // Extract date and time
-        $appoDate = new DateTime($soonest_appointment['scheduledate'] . ' ' . $soonest_appointment['scheduletime']);
-        $now = new DateTime();
-    
-        // 2. Calculate the time difference
-        $interval = $now->diff($appoDate);
-        $hours = $interval->h;
-        $hours = $hours + ($interval->days * 24); // Convert days to hours
-    
-        // 3. Store the result in a variable
-        if ($interval->days > 0) {
-            $appointment_time_difference = "in " . $interval->days . " days";
-        } else {
-            $appointment_time_difference = "in " . $hours . " hours";
-        }
-    } else {
-        $appointment_time_difference = "No upcoming appointments";
-    }
-    
-    $json_total_app = json_encode($total_appointments);
-    $json_total_rev = json_encode($total_revenue);
-    $json_upcoming = json_encode($upcoming_appointments);
-    $json_popular = json_encode($most_popular_service);
-    $json_past = json_encode($past_appointments);
-    $json_services = json_encode($services);
-    $json_user_info = json_encode($userfetch);
-    $stylistName = $userfetch["s_name"];
-    $slnName = $userfetch["sln_name"];
-    $stylistAddr = $userfetch["sln_address"];
-
-    echo "<script>console.log($json_total_rev);</script>";
-    echo "<script>console.log($json_total_app);</script>";
-    echo "<script>console.log($json_upcoming);</script>";
-    echo "<script>console.log($json_popular);</script>";
-    echo "<script>console.log($json_past);</script>";
-    echo "<script>console.log($json_services);</script>";
-    echo "<script>console.log($json_user_info);</script>";
-
-    ?>
 <!--
 // v0 by Vercel.
 // https://v0.dev/t/WvTllYINMJt

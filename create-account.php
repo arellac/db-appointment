@@ -72,7 +72,7 @@ if($_POST){
             }
             elseif($utype=='C'){
                 $database->query("insert into client(c_id, c_email, c_name) values('$lastInsertedId','$email','$name');");
-                header('Location: client/index.php');
+                header('Location: /db-project/index.php"');
             }
             // header('Location: client/index.php');
 

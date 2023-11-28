@@ -50,7 +50,7 @@ if (isset($_GET['token'])) {
 
 }
 else{
-    $_SESSION["usertype"]="S";
+    $_SESSION["usertype"]="C";
 }
 
 echo $_SESSION["usertype"];

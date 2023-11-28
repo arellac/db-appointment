@@ -58,7 +58,29 @@
         
         //     header("Location: error.php"); 
         //     exit(); 
+        $query = "SELECT s.service_id AS service_id, s.service_name, s.service_price, s.service_details
+            FROM stylist_services ss
+            JOIN services s ON ss.service_id = s.service_id
+            WHERE ss.s_id = ?";
+        $stmt = $database->prepare($query);
+        $stmt->bind_param("i", $stylistId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $services = [];
+        while ($row = $result->fetch_assoc()) {
+            $services[] = $row;
         }
+
+        }
+
+        $query = "SELECT sln_info FROM stylist WHERE s_id = ?";
+        $stmt = $database->prepare($query);
+        $stmt->bind_param("i", $stylistId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        $sln_info = $result->fetch_assoc();
         
 
     ?>
@@ -138,23 +160,65 @@
       </div>
         </div>
       <!-- sTaRs -->
-      <div class="flex space-x-1 ">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+      <?php
+        // Assuming you have already established a PDO connection as $pdo
+
+        // Prepare the SQL statement
+        $stmt = $database->prepare("SELECT AVG(rating) as average_rating FROM reviews WHERE s_id = ?");
+
+        // Bind the stylist ID parameter
+        $stmt->bind_param("i", $stylistId); 
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $row = $result->fetch_assoc();
+        $averageRating = round($row['average_rating'], 1);  // Rounding off to 1 decimal place
+
+        $fullStars = floor($averageRating);
+        $halfStar = 0;
+        $emptyStars = 5 - $fullStars;
+        
+        if (($averageRating - $fullStars) >= 0.5) {
+            $halfStar = 1;
+            $emptyStars -= 1;  // since we're adding a half star, we should reduce one empty star
+        }
+        ?>
+
+    <div class="flex space-x-1 ">
+        <?php for ($i = 0; $i < $fullStars; $i++): ?>
+            <!-- Full Star -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="currentColor" stroke="none">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+        <?php endfor; ?>
+
+        <?php if ($halfStar): ?>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <!-- Render the full empty star for the outline -->
+            <polygon fill="none" stroke="currentcolor" stroke-width="2" points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+
+            <!-- Define a mask for half-star -->
+            <defs>
+                <mask id="half-star-mask">
+                    <!-- Everything under a white pixel will be shown -->
+                    <rect width="12" height="24" fill="white"></rect>
+                    <!-- Everything under a black pixel will be hidden -->
+                    <rect x="12" width="12" height="24" fill="black"></rect>
+                </mask>
+            </defs>
+            <!-- Render the half-filled star on top using the mask -->
+            <polygon fill="currentcolor" stroke="none" mask="url(#half-star-mask)" points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
         </svg>
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-        </svg>
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-        </svg>
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-        </svg>
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-        </svg>
-      </div>
+
+        <?php endif; ?>
+
+        <?php for ($i = 0; $i < $emptyStars; $i++): ?>
+            <!-- Empty Star -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+        <?php endfor; ?>
+    </div>
       <!-- ADDRESS -->
       <div class="flex items-center text-sm text-gray-600">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-gray-500">
@@ -185,31 +249,96 @@
             <span class="ml-2">+0 123 456 7890</span>
       </div>
       <!-- Tabs -->
-      <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
+      <div class="mb-4 border-b border-gray-200 dark:border-gray-700 w-full">
         <ul class="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400" id="tabs-example" role="tablist">
           <li class="mr-2" role="presentation">
             <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 active" id="profile-tab-example" type="button" role="tab" aria-controls="profile-example" aria-selected="true">info</button>
           </li>
           <li class="mr-2" role="presentation">
-            <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="dashboard-tab-example" type="button" role="tab" aria-controls="dashboard-example" aria-selected="false">Reviews</button>
+            <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="dashboard-tab-example" type="button" role="tab" aria-controls="dashboard-example" aria-selected="false">reviews</button>
           </li>
           <li class="mr-2" role="presentation">
             <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="settings-tab-example" type="button" role="tab" aria-controls="settings-example" aria-selected="false">services</button>
           </li>
           <li role="presentation">
-            <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="contacts-tab-example" type="button" role="tab" aria-controls="contacts-example" aria-selected="false">directions</button>
+            <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="contacts-tab-example" type="button" role="tab" aria-controls="contacts-example" aria-selected="false">gallery</button>
           </li>
         </ul>
       </div>
-      <div id="tabcontentExample" class="w-full max-w-8xl mx-auto">
-        <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="profile-example" role="tabpanel" aria-labelledby="profile-tab-example">
-          <p class="text-sm text-gray-500 dark:text-gray-400">this is some placeholder content the <strong class="font-medium text-gray-800 dark:text-white">info tab's associated content</strong>. blaah blah  blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah </p>
+      <div id="tabcontentExample" class="w-full max-w-8xl mx-auto flex">
+        <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-800 w-full" id="profile-example" role="tabpanel" aria-labelledby="profile-tab-example">
+            <?php
+                echo "<p class='text-sm text-gray-500 dark:text-gray-400'>" . nl2br(htmlspecialchars($sln_info['sln_info'])) . "</p>";
+            ?>        
+                <p class="text-sm text-gray-500 dark:text-gray-400 opacity-0">this is some placeholder content. blaah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah </p>
+
         </div>
         <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="dashboard-example" role="tabpanel" aria-labelledby="dashboard-tab-example">
-          <p class="text-sm text-gray-500 dark:text-gray-400">this is some placeholder content the <strong class="font-medium text-gray-800 dark:text-white">Dashboard tab's associated content</strong>. Clicking another tab will toggle the visibility of this one for the next. the tab Javascript swaps classes to control the content visibility and styling. </p>
+
+        <p class="text-sm text-gray-500 dark:text-gray-400 opacity-0">this is some placeholder content. blaah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah </p>
+
+        <div class="reviews"></div>
+        <script>
+            const reviews_page_id = stylistId;
+            fetch("./api/fetch_reviews.php?s_id=" + reviews_page_id).then(response => response.text()).then(data => {
+                document.querySelector(".reviews").innerHTML = data;
+
+                let writeReviewBtn = document.querySelector(".reviews .write_review_btn");
+                let writeReviewForm = document.querySelector(".reviews .write_review form");
+                let writeReviewDiv = document.querySelector(".reviews .write_review");
+
+                writeReviewBtn.onclick = event => {
+                    event.preventDefault();
+                    writeReviewDiv.classList.remove('hidden'); // Remove the hidden class to display the form
+                    document.querySelector(".reviews .write_review input[name='rating']").focus();  // focus on rating now
+                };
+
+                writeReviewForm.onsubmit = event => {
+                    event.preventDefault();
+                    fetch("./api/fetch_reviews.php?s_id=" + reviews_page_id, {
+                        method: 'POST',
+                        body: new FormData(writeReviewForm)
+                    }).then(response => response.text()).then(data => {
+                        document.querySelector(".reviews .write_review").innerHTML = data;
+                    });
+                };
+            });
+        </script>
+
+
+
+
         </div>
         <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="settings-example" role="tabpanel" aria-labelledby="settings-tab-example">
-          <p class="text-sm text-gray-500 dark:text-gray-400">this is some placeholder content the <strong class="font-medium text-gray-800 dark:text-white">Dashboard tab's associated content</strong>. Clicking another tab will toggle the visibility of this one for the next. the tab Javascript swaps classes to control the content visibility and styling. </p>
+            <?php
+            if (count($services) == 0) {
+                
+                echo "<p class='text-sm text-gray-500 dark:text-gray-400'>No services found for this stylist.</p>";
+                echo "<p class='text-sm text-gray-500 dark:text-gray-400 opacity-0'>this is some placeholder content. blaah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah </p>";
+            } else {
+                echo "<p class='text-sm text-gray-500 dark:text-gray-400 opacity-0'>this is some placeholder content. blaah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah blaah blah </p>";
+                echo "<table class='min-w-full bg-white'>";
+                echo "<thead>";
+                echo "<tr>";
+                echo "<th class='px-4 py-2 border'>Service Name</th>";
+                echo "<th class='px-4 py-2 border'>Price</th>";
+                echo "<th class='px-4 py-2 border'>Details</th>";
+                echo "</tr>";
+                echo "</thead>";
+                echo "<tbody>";
+
+                foreach ($services as $service) {
+                    echo "<tr>";
+                    echo "<td class='px-4 py-2 border'>" . htmlspecialchars($service['service_name']) . "</td>";
+                    echo "<td class='px-4 py-2 border'>$" . number_format($service['service_price'], 2) . "</td>";
+                    echo "<td class='px-4 py-2 border'>" . htmlspecialchars($service['service_details']) . "</td>";
+                    echo "</tr>";
+                }
+
+                echo "</tbody>";
+                echo "</table>";
+            }
+            ?>
         </div>
         <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="contacts-example" role="tabpanel" aria-labelledby="contacts-tab-example">
           <p class="text-sm text-gray-500 dark:text-gray-400">this is some placeholder content the <strong class="font-medium text-gray-800 dark:text-white">Contacts tab's associated content</strong>. Clicking another tab will toggle the visibility of this one for the next. the tab Javascript swaps classes to control the content visibility and styling. </p>

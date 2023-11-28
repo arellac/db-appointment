@@ -1,17 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/animations.css">  
-    <link rel="stylesheet" href="css/login.css">
-        
-    <title>Login</title>
 
-    
-    
-</head>
 <body style="background-color: #FAF6F4;">
     <?php
     error_reporting(E_ALL);
@@ -33,9 +22,19 @@
 
     //import database
     include("connection.php");
-    include './components/nav.php';
 
-    
+    ?>
+    <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="css/animations.css">  
+      <link rel="stylesheet" href="css/login.css">
+          
+      <title>Login</title>
+  </head>
+
+    <?php
 
 
 
@@ -111,6 +110,7 @@
     }else{
         $error='<label for="promter" class="form-label">&nbsp;</label>';
     }
+    include './components/nav.php';
 
     ?>
 

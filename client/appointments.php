@@ -1,10 +1,4 @@
-<html>
-    <head>
-
-    </head>
-    <body class="">
-    
-    <?php
+<?php
         session_start();
         include("../connection.php");
         include '../components/nav.php';
@@ -15,6 +9,8 @@
                 header("location: ../login.php");
             }
 
+        }else{
+            header("location: ../login.php");
         }
 
         $useremail=$_SESSION["user"];
@@ -57,6 +53,13 @@
         $result = $stmt->get_result();
         $past_appointments = $result->fetch_all(MYSQLI_ASSOC);
     ?>
+<html>
+    <head>
+
+    </head>
+    <body class="">
+    
+
       
       
       <!-- Tabs -->
