@@ -9,4 +9,5 @@ A stylist booking application. It allows stylists to manage their profiles and s
 2. Make a folder in "htdocs" directory with this source code
 3. Import the "db_project1.sql" file
 4. http://localhost/scheduler/login.php
-5. net stop MySQL80 
+5. Make sure MySQL is not running on local computer.(net stop MySQL80)
+   
