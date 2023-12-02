@@ -1,19 +1,27 @@
 <?php
 session_start();
 include("../../connection.php");
-$useremail = $_SESSION["user"];
+$useremail = "";
 
-$sqlmain= "select * from client where c_email=?";
-$stmt = $database->prepare($sqlmain);
-$stmt->bind_param("s",$useremail);
-$stmt->execute();
-$userrow = $stmt->get_result();
-$userfetch=$userrow->fetch_assoc();
-if ($userfetch && isset($userfetch["c_id"])) {
-    $userid = $userfetch["c_id"];
-} else {
-    $userid = 0; // default value
+// Check if the session variable is set
+if (isset($_SESSION["user_id"])) {
+    $userid = $_SESSION["user_id"];
 }
+else{
+    $userid = 0;
+}
+
+// $sqlmain= "select * from client where c_email=?";
+// $stmt = $database->prepare($sqlmain);
+// $stmt->bind_param("s",$useremail);
+// $stmt->execute();
+// $userrow = $stmt->get_result();
+// $userfetch=$userrow->fetch_assoc();
+// if ($userfetch && isset($userfetch["c_id"])) {
+//     $userid = $userfetch["c_id"];
+// } else {
+//     $userid = 0; // default value
+// }
 
 function time_elapsed_string($datetime, $full = false) {
     $now = new DateTime;
@@ -67,12 +75,12 @@ $clientNames = [];
 $allClientIDs = array_column($reviews, 'c_id');
 if(!empty($allClientIDs)) {
     $placeholders = implode(',', array_fill(0, count($allClientIDs), '?'));
-    $stmt = $database->prepare('SELECT c_id, c_name FROM client WHERE c_id IN (' . $placeholders . ')');
+    $stmt = $database->prepare('SELECT m_id, m_name FROM members WHERE m_id IN (' . $placeholders . ')');
     $stmt->bind_param(str_repeat('i', count($allClientIDs)), ...$allClientIDs);
     $stmt->execute();
     $result = $stmt->get_result();
     while($row = $result->fetch_assoc()) {
-        $clientNames[$row['c_id']] = $row['c_name'];
+        $clientNames[$row['m_id']] = $row['m_name'];
     }
     $stmt->close();
 }
@@ -114,7 +122,7 @@ if ($canWriteReview):
     <?php
     else:
     ?>
-    <?php
+        <a href="#" class="write_review_btn inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/80 active:bg-primary/100 px-4 py-2 w-full h-12 rounded-md bg-zinc-900 text-zinc-50 shadow-md hover:shadow-lg dark:bg-zinc-50 dark:text-zinc-900" style="pointer-events: none; background-color: grey; cursor: not-allowed;">Write Review</a>    <?php
     endif;
 
 ?>

@@ -1,20 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/animations.css">  
-    <link rel="stylesheet" href="css/signup.css">
-        
-    <title>Create Account</title>
-    <style>
-        .container{
-            animation: transitionIn-X 0.5s;
-        }
-    </style>
-</head>
-<body>
 <?php
 
 
@@ -33,9 +16,7 @@ $_SESSION["date"]=$date;
 
 //import database
 include("connection.php");
-include './components/nav.php';
 
-echo $_SESSION["usertype"];
 
 if($_POST){
 
@@ -48,7 +29,7 @@ if($_POST){
     $newpassword=$_POST['newpassword'];
     $cpassword=$_POST['cpassword'];
     $utype = $_SESSION["usertype"];
-    $tele = "012";
+    $tele = "123456789";
     if ($newpassword==$cpassword){
         $sqlmain= "select * from members where m_email=?;";
         $stmt = $database->prepare($sqlmain);
@@ -61,18 +42,18 @@ if($_POST){
             $database->query("insert into members(m_email,m_number,m_name, m_password,role) values('$email','$tele','$name','$newpassword', '$utype');");
             $lastInsertedId = $database->insert_id;
 
-            echo $_SESSION["usertype"];
 
             $_SESSION["user"]=$email;
+            $_SESSION['user_id'] = $lastInsertedId;
             $_SESSION["username"]=$fname;
             if($utype=='S'){
-                $database->query("insert into stylist(s_id, s_email, s_name) values('$lastInsertedId','$email','$name');");
+                $database->query("insert into stylist(s_id) values('$lastInsertedId');");
                 header('Location: stylist/dashboard.php');
                 
             }
             elseif($utype=='C'){
-                $database->query("insert into client(c_id, c_email, c_name) values('$lastInsertedId','$email','$name');");
-                header('Location: /db-project/index.php"');
+                $database->query("insert into client(c_id) values('$lastInsertedId');");
+                header('Location: index.php');
             }
             // header('Location: client/index.php');
 
@@ -80,7 +61,7 @@ if($_POST){
         }
         
     }else{
-        $error='<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Password Conformation Error! Reconform Password</label>';
+        $error='<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Password Confirmation Error! Reconfirm Password</label>';
     }
 
 
@@ -90,8 +71,29 @@ if($_POST){
     //header('location: signup.php');
     $error='<label for="promter" class="form-label"></label>';
 }
+include './components/nav.php';
 
 ?>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/animations.css">  
+    <link rel="stylesheet" href="css/signup.css">
+        
+    <title>Create Account</title>
+    <style>
+        .container{
+            animation: transitionIn-X 0.5s;
+        }
+    </style>
+</head>
+<body>
+
 
 
     <center>

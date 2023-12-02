@@ -56,25 +56,6 @@
 
       </div>
       <div class="grid gap-4">
-        <div class="rounded-lg border border-zinc-200 dark:border-zinc-800 p-4">
-          <h2 class="font-semibold text-xl">Name: <?php echo $stylistName; ?></h2>
-          <form class="ajaxForm" action="api/edit_profile.php">
-        <div class="editProfile__account">
-            <label for="s_name"></label>
-            <input
-                placeholder="Edit your Name"
-                type="text"
-                name="s_name"
-                id="name"
-                autocomplete="off"
-                class="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 w-full mt-2"
-            />
-            </div>
-            <div class="editProfile__right--updateBtn">
-                <input type="submit" value="Update" class="inline-flex bg-black text-white items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 mt-4">
-            </div>        
-            </form>
-        </div>
 
         <div class="rounded-lg border border-zinc-200 dark:border-zinc-800 p-4">
           <h2 class="font-semibold text-xl">Address: <?php echo $stylistAddr; ?> </h2>

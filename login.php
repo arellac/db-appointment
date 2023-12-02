@@ -1,13 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<body style="background-color: #FAF6F4;">
-    <?php
-    error_reporting(E_ALL);
-    ini_set('display_errors', '1');
-    //learn from w3schools.com
-    //Unset all the server side variables
-
+<?php
     session_start();
 
     $_SESSION["user"]="";
@@ -23,18 +14,7 @@
     //import database
     include("connection.php");
 
-    ?>
-    <head>
-      <meta charset="UTF-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <link rel="stylesheet" href="css/animations.css">  
-      <link rel="stylesheet" href="css/login.css">
-          
-      <title>Login</title>
-  </head>
-
-    <?php
+    
 
 
 
@@ -50,46 +30,42 @@
             $utype=$result->fetch_assoc()['role'];
             if ($utype=='C'){
                 //TODO
-                $checker = $database->query("select * from members where m_email='$email' and m_password='$password'");
-                if ($checker->num_rows==1){
-
-
-                    //   client dashbord
-                    $_SESSION['user']=$email;
-                    $_SESSION['usertype']='C';
-                    
+                $checker = $database->prepare("SELECT m_id FROM members WHERE m_email=? AND m_password=?");
+                $checker->bind_param("ss", $email, $password);
+                $checker->execute();
+                $result = $checker->get_result();
+                
+                if ($result->num_rows == 1){
+                    $row = $result->fetch_assoc();
+                    $member_id = $row['m_id'];
+                
+                    // Now you can store the member ID in the session
+                    $_SESSION['user'] = $email;
+                    $_SESSION['user_id'] = $member_id; // Store the member ID in the session
+                    $_SESSION['usertype'] = 'C';
+                
                     header('location: ./index.php');
-
-                }else{
-                    $error='<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
+                    exit(); // It's a good practice to call exit() after header redirection
+                } else {
+                    $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
                 }
-
-            }elseif($utype=='A'){
-                //TODO
-                $checker = $database->query("select * from members where m_email='$email' and m_password='$password'");
-                if ($checker->num_rows==1){
-
-
-                    //   Admin dashbord
-                    $_SESSION['user']=$email;
-                    $_SESSION['usertype']='A';
-                    
-                    header('location: admin/home.php');
-
-                }else{
-                    $error='<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
-                }
-
             }elseif($utype=='S'){
                 //TODO
-                $checker = $database->query("select * from members where m_email='$email' and m_password='$password'");
-                if ($checker->num_rows==1){
+                $checker = $database->prepare("SELECT m_id FROM members WHERE m_email=? AND m_password=?");
+                $checker->bind_param("ss", $email, $password);
+                $checker->execute();
+                $result = $checker->get_result();
 
+                if ($result->num_rows==1){
+                  $row = $result->fetch_assoc();
+                  $member_id = $row['m_id'];
 
                     //   stylist dashbord
                     $_SESSION['user']=$email;
+                    $_SESSION['user_id'] = $member_id;
                     $_SESSION['usertype']='S';
                     header('location: stylist/dashboard.php');
+                    exit();
 
                 }else{
                     $error='<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
@@ -113,6 +89,24 @@
     include './components/nav.php';
 
     ?>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/animations.css">  
+    <link rel="stylesheet" href="css/login.css">
+        
+    <title>Login</title>
+
+    
+    
+</head>
+<body style="background-color: #FAF6F4;">
+
 
     <center>
       <div class="__layout">

@@ -1,3 +1,10 @@
+<head>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+
+
 <main class="grid grid-cols-1 gap-4 p-4 md:gap-8 md:p-6 lg:grid-cols-1 font-mono">
 <div id="response2" class="hidden p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"></div>
 
@@ -61,4 +68,5 @@
         </table>
     </div>
 </div>
+
 </main>

@@ -4,14 +4,14 @@
         <nav class="ml-4">
           <ul class="flex space-x-4">
             <li>
-              <a class="text-white hover:underline" href="/db-project/index.php">
+              <a class="text-white hover:underline" href="/index.php">
                 Home
               </a>
             </li>
 
             <li>
-              <a class="text-white hover:underline" href="/db-project/client/appointments.php">
-                Appointments
+              <a class="text-white hover:underline" href="/client/appointments.php">
+                Profile
               </a>
             </li>
           </ul>
@@ -21,13 +21,13 @@
     <?php
       if(isset($_SESSION["user"])){
         if(($_SESSION["user"])=="" or $_SESSION['usertype']!='C'){
-          echo '<a href="/db-project/login.php" class="px-4 py-2 bg-white text-[#ff6600] font-bold rounded hover:bg-[#ddd]">Login</a>';
+          echo '<a href="/login.php" class="px-4 py-2 bg-white text-[#ff6600] font-bold rounded hover:bg-[#ddd]">Login</a>';
         }else{
           $useremail=$_SESSION["user"];
-          echo '<a href="/db-project/logout.php" class="px-4 py-2 bg-white text-[#ff6600] font-bold rounded hover:bg-[#ddd]">Logout</a>';
+          echo '<a href="/logout.php" class="px-4 py-2 bg-white text-[#ff6600] font-bold rounded hover:bg-[#ddd]">Logout</a>';
         }
       }else{
-        echo '<a href="/db-project/login.php" class="px-4 py-2 bg-white text-[#ff6600] font-bold rounded hover:bg-[#ddd]">Login</a>';
+        echo '<a href="/login.php" class="px-4 py-2 bg-white text-[#ff6600] font-bold rounded hover:bg-[#ddd]">Login</a>';
       }
     ?>
 </div>

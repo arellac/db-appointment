@@ -4,20 +4,18 @@ session_start();
 
 include("../connection.php");
 $useremail = $_SESSION["user"];
+$stylistId = $_SESSION["user_id"];
 
-
-$sqlmain = "SELECT * FROM stylist WHERE s_email=?";
+$sqlmain = "SELECT stylist.*, members.m_name FROM stylist JOIN members on stylist.s_id = members.m_id WHERE s_id=?";
 $stmt = $database->prepare($sqlmain);
-$stmt->bind_param("s", $useremail);
+$stmt->bind_param("i", $stylistId);
 $stmt->execute();
 $userrow = $stmt->get_result();
 $userfetch = $userrow->fetch_assoc();
-$stylistId = $userfetch["s_id"];
 
 // 1. Total Revenue
-$query1 = "SELECT SUM(s.service_price) AS total_revenue
-            FROM appointment a 
-            JOIN services s ON a.service_id = s.service_id
+$query1 = "SELECT SUM(a.booking_price) AS total_revenue
+            FROM appointment a
             WHERE a.s_id = ?";
 $stmt1 = $database->prepare($query1);
 $stmt1->bind_param("i", $stylistId);
@@ -37,11 +35,10 @@ $total_appointments = $result->fetch_assoc();
 // 3. Upcoming Appointments
 $query3 = "
 SELECT 
-    a.appoid, a.c_id, c.c_name, a.scheduledate, a.scheduletime, 
-    a.service_id, s.service_name, s.service_price, a.payment_method
+    a.appoid, a.c_id, m.m_name, a.scheduledate, a.scheduletime, 
+    a.booking_price, a.booking_name, a.payment_method
 FROM appointment a
-LEFT JOIN services s ON a.service_id = s.service_id
-LEFT JOIN client c ON a.c_id = c.c_id
+LEFT JOIN members m ON a.c_id = m.m_id
 WHERE a.s_id = ? AND a.scheduledate >= CURRENT_DATE
 ORDER BY a.scheduledate, a.scheduletime
 ";
@@ -52,23 +49,28 @@ $result = $stmt3->get_result();
 $upcoming_appointments = $result->fetch_all(MYSQLI_ASSOC);
 
 // 4. Most Popular Appointment
-$query4 = "SELECT service_id, COUNT(*) AS service_count
-            FROM appointment 
-            WHERE s_id = ?
-            GROUP BY service_id
-            ORDER BY service_count DESC
-            LIMIT 1";
-$stmt4 = $database->prepare($query4);
-$stmt4->bind_param("i", $stylistId);
-$stmt4->execute();
-$result = $stmt4->get_result();
-$most_popular_service = $result->fetch_assoc();
+// $query4 = "SELECT service_id, COUNT(*) AS service_count
+//             FROM appointment 
+//             WHERE s_id = ?
+//             GROUP BY service_id
+//             ORDER BY service_count DESC
+//             LIMIT 1";
+// $stmt4 = $database->prepare($query4);
+// $stmt4->bind_param("i", $stylistId);
+// $stmt4->execute();
+// $result = $stmt4->get_result();
+// $most_popular_service = $result->fetch_assoc();
 
 // 5. Past Appointments
-$query5 = "SELECT appoid, c_id, scheduledate, scheduletime, service_id, payment_method
-        FROM appointment
-        WHERE s_id = ? AND scheduledate < CURRENT_DATE
-        ORDER BY scheduledate DESC, scheduletime DESC";
+$query5 = "
+SELECT 
+    a.appoid, a.c_id, m.m_name, a.scheduledate, a.scheduletime, 
+    a.booking_price, a.booking_name, a.payment_method
+FROM appointment a
+LEFT JOIN members m ON a.c_id = m.m_id
+WHERE a.s_id = ? AND a.scheduledate < CURRENT_DATE
+ORDER BY a.scheduledate, a.scheduletime
+";
 $stmt5 = $database->prepare($query5);
 $stmt5->bind_param("i", $stylistId);
 $stmt5->execute();
@@ -76,10 +78,9 @@ $result = $stmt5->get_result();
 $past_appointments = $result->fetch_all(MYSQLI_ASSOC);
 
 // 6. Services
-$query = "SELECT s.service_id AS service_id, s.service_name, s.service_price, s.service_details
-            FROM stylist_services ss
-            JOIN services s ON ss.service_id = s.service_id
-            WHERE ss.s_id = ?";
+$query = "SELECT service_id, service_name, service_price, service_details
+            FROM services
+            WHERE s_id = ?";
 $stmt = $database->prepare($query);
 $stmt->bind_param("i", $stylistId);
 $stmt->execute();
@@ -118,18 +119,16 @@ if (!empty($upcoming_appointments)) {
 $json_total_app = json_encode($total_appointments);
 $json_total_rev = json_encode($total_revenue);
 $json_upcoming = json_encode($upcoming_appointments);
-$json_popular = json_encode($most_popular_service);
 $json_past = json_encode($past_appointments);
 $json_services = json_encode($services);
 $json_user_info = json_encode($userfetch);
-$stylistName = $userfetch["s_name"];
+$stylistName = $userfetch["m_name"];
 $slnName = $userfetch["sln_name"];
 $stylistAddr = $userfetch["sln_address"];
 
 echo "<script>console.log($json_total_rev);</script>";
 echo "<script>console.log($json_total_app);</script>";
 echo "<script>console.log($json_upcoming);</script>";
-echo "<script>console.log($json_popular);</script>";
 echo "<script>console.log($json_past);</script>";
 echo "<script>console.log($json_services);</script>";
 echo "<script>console.log($json_user_info);</script>";
@@ -154,16 +153,19 @@ echo "<script>console.log($json_user_info);</script>";
 <div class="grid h-screen min-h-screen w-full overflow-hidden lg:grid-cols-[280px_1fr]">
   <div class="hidden border-r bg-zinc-100/40 lg:block">
     <div class="flex flex-col gap-3">
-      <div class="flex h-[70px] items-center px-6">
-        <a class="flex items-center gap-3 font-semibold" href="#">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class=" h-7 w-7">
+    <div class="flex h-[70px] justify-between items-center px-6">
+    <a class="flex items-center gap-3 font-semibold" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class=" h-7 w-7">
             <path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z"></path>
             <path d="m3 9 2.45-4.9A2 2 0 0 1 7.24 3h9.52a2 2 0 0 1 1.8 1.1L21 9"></path>
             <path d="M12 3v6"></path>
-          </svg>
-          <span class=""> BookLook </span>
-        </a>
-      </div>
+        </svg>
+        <span class=""> BookLook </span>
+    </a>
+    <button onclick="window.location.href='../logout.php'" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+        Logout
+    </button>
+</div>
       <div class="flex-1">
         <nav class="grid items-start px-4 text-base font-medium">
           <a data-tab="dashboard" class="tab-btn flex items-center gap-4 rounded-lg px-4 py-3 text-zinc-500 transition-all hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50" href="#">
@@ -246,38 +248,108 @@ $(document).ready(function() {
 });
 </script>
 <script>
-    $(document).ready(function() {
+$(document).ready(function() {
     $('#serviceForm').submit(function(e) {
         e.preventDefault();
         
-        $.ajax({
-            type: 'POST',
-            url: 'api/add_service.php',
-            data: $('#serviceForm').serialize(),
-            success: function(response) {
-                $('#response2').html(response).removeClass('hidden');
-            },
-            error: function() {
-                $('#response2').html('Error in request.');
+        swal({
+            title: "Please Confirm",
+            text: "Are you ready to add this service?",
+            icon: "info",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willAdd) => {
+            if (willAdd) {
+                $.ajax({
+                    type: 'POST',
+                    url: 'api/add_service.php',
+                    data: $('#serviceForm').serialize(),
+                    success: function(response) {
+                        swal("Poof! Your service has been added!", {
+                            icon: "success",
+                        }).then(function() {
+                            location.reload(); // reload the page
+                        });
+                    },
+                    error: function() {
+                        swal("Error in request.", {
+                            icon: "error",
+                        });
+                    }
+                });
+            } else {
+                swal("Your service is safe!");
             }
         });
     });
-});
-</script>
-<script>
-    $(document).ready(function() {
+
     $('#deleteService').submit(function(e) {
         e.preventDefault();
         
-        $.ajax({
-            type: 'POST',
-            url: 'api/delete_service.php',
-            data: $('#deleteService').serialize(),
-            success: function(response) {
-                $('#response2').html(response).removeClass('hidden');
-            },
-            error: function() {
-                $('#response2').html('Error in request.');
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this service!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                $.ajax({
+                    type: 'POST',
+                    url: 'api/delete_service.php',
+                    data: $('#deleteService').serialize(),
+                    success: function(response) {
+                        swal("Poof! Your service has been deleted!", {
+                            icon: "success",
+                        }).then(function() {
+                            location.reload(); // reload the page
+                        });
+                    },
+                    error: function() {
+                        swal("Error in request.", {
+                            icon: "error",
+                        });
+                    }
+                });
+            } else {
+                swal("Your service is safe!");
+            }
+        });
+    });
+    
+    $('#cancelAppointment').submit(function(e) {
+        e.preventDefault();
+        
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this appointment!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                $.ajax({
+                    type: 'POST',
+                    url: 'api/cancel_appointment.php',
+                    data: $('#cancelAppointment').serialize(),
+                    success: function(response) {
+                        swal("Poof! Your appointment has been deleted!", {
+                            icon: "success",
+                        }).then(function() {
+                            location.reload(); // reload the page
+                        });
+                    },
+                    error: function() {
+                        swal("Error in request.", {
+                            icon: "error",
+                        });
+                    }
+                });
+            } else {
+                swal("Your service is safe!");
             }
         });
     });

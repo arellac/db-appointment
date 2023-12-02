@@ -1,20 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/animations.css">  
-    <link rel="stylesheet" href="css/signup.css">
-        
-    <title>Sign Up</title>
-    
-</head>
-<body style="background-color: #FAF6F4;">
 <?php
-
-//learn from w3schools.com
-//Unset all the server side variables
 
 session_start();
 
@@ -27,21 +11,12 @@ $date = date('Y-m-d');
 
 $_SESSION["date"]=$date;
 include("connection.php");
-include './components/nav.php';
 
 
 if (isset($_GET['token'])) {
     $token = $_GET['token'];
-    $result= $database->query("select * from one_time_links where link='$token'");
-    if($result){
-        if($result->num_rows > 0){
-            echo "WORKED 1";
-            $_SESSION["usertype"]="S";
-
-        }else{
-            echo "WORKED";
-
-        }
+    if($token){
+        $_SESSION["usertype"]="S";
 
     }
     else{
@@ -53,7 +28,7 @@ else{
     $_SESSION["usertype"]="C";
 }
 
-echo $_SESSION["usertype"];
+// echo $_SESSION["usertype"];
 
 if($_POST){
 
@@ -65,17 +40,31 @@ if($_POST){
     );
 
 
-    print_r($_SESSION["personal"]);
-    $result= $database->query("delete from one_time_links where link='$token'");
+    // print_r($_SESSION["personal"]);
+    // $result= $database->query("delete from one_time_links where link='$token'");
 
     header("location: create-account.php");
 
-
-
-
 }
+include './components/nav.php';
 
 ?>
+
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/animations.css">  
+    <link rel="stylesheet" href="css/signup.css">
+        
+    <title>Sign Up</title>
+    
+</head>
+<body style="background-color: #FAF6F4;">
 
 
     <center>
@@ -126,7 +115,11 @@ if($_POST){
                     <br>
                     <label for="" class="sub-text" style="font-weight: 280;">Already have an account&#63; </label>
                     <a href="login.php" class="hover-link1 non-style-link">Login</a>
-                    <br><br><br>
+                    <br><br>
+                    <label for="" class="sub-text" style="font-weight: 280;">Stylist&#63; </label>
+                    <a href="signup.php?token=true" class="hover-link1 non-style-link">Create Account</a>
+                    
+                    <br><br>
                 </td>
 
             </tr>
