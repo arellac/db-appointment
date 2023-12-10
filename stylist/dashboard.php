@@ -16,7 +16,7 @@ $userfetch = $userrow->fetch_assoc();
 // 1. Total Revenue
 $query1 = "SELECT SUM(a.booking_price) AS total_revenue
             FROM appointment a
-            WHERE a.s_id = ?";
+            WHERE a.s_id = ? AND scheduledate < CURRENT_DATE";
 $stmt1 = $database->prepare($query1);
 $stmt1->bind_param("i", $stylistId);
 $stmt1->execute();
@@ -25,7 +25,7 @@ $row = $result->fetch_assoc();
 $total_revenue = $row['total_revenue'];
 
 // 2. Total Appointments Made
-$query2 = "SELECT COUNT(*) AS total_appointments FROM appointment WHERE s_id = ?";
+$query2 = "SELECT COUNT(*) AS total_appointments FROM appointment WHERE s_id = ? AND scheduledate > CURRENT_DATE";
 $stmt = $database->prepare($query2);
 $stmt->bind_param("i", $stylistId);
 $stmt->execute();

@@ -60,7 +60,7 @@ include './components/nav.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/animations.css">  
     <link rel="stylesheet" href="css/signup.css">
-        
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>Sign Up</title>
     
 </head>
@@ -116,8 +116,10 @@ include './components/nav.php';
                     <label for="" class="sub-text" style="font-weight: 280;">Already have an account&#63; </label>
                     <a href="login.php" class="hover-link1 non-style-link">Login</a>
                     <br><br>
+                    <?php if($_SESSION["usertype"] != "S"): ?>
                     <label for="" class="sub-text" style="font-weight: 280;">Stylist&#63; </label>
                     <a href="signup.php?token=true" class="hover-link1 non-style-link">Create Account</a>
+                    <?php endif; ?>
                     
                     <br><br>
                 </td>
@@ -138,4 +140,5 @@ include './components/nav.php';
     <script src="https://cdn.tailwindcss.com"></script>
 
     </body>
+    
 </html>

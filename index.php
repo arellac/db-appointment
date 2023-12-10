@@ -92,7 +92,7 @@
   <?php endif; ?>
 
 
-  <div class="bg-gray-25 dark:bg-gray-900 relative bg-[#FAF6F4]">
+  <div class="relative bg-[#FAF6F4]">
 
     <div class="container mx-auto pt-12 pb-[100px]">
       <div>
@@ -101,7 +101,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-7 mt-7 mb-12 ">
             
             <?php
-              $query = "SELECT s.*, m.m_name FROM stylist s JOIN members m ON s.s_id = m.m_id";
+              $query = "SELECT s.*, m.m_name FROM stylist s JOIN members m ON s.s_id = m.m_id ORDER BY m.m_id DESC";
 
               $result = $database->query($query);
 

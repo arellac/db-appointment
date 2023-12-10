@@ -10,7 +10,7 @@
         <div class="grid grid-cols-4 gap-4">
           <div class="bg-green-100 text-green-800 rounded-lg p-4 dark:bg-zinc-800 flex justify-between items-start">
             <div>
-              <h3 class="text-md font-semibold"> Appointments </h3>
+              <h3 class="text-md font-semibold"> Upcoming Appointments </h3>
               <p class="text-4xl"> <?php echo $total_appointments['total_appointments']; ?> </p>
             </div>
 

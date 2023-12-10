@@ -1,41 +1,58 @@
 <?php
-   // check if an image file was uploaded
-   session_start();
+// check if an image file was uploaded
+session_start();
 
-   include("../../connection.php");
-   $useremail = $_SESSION["user"];
-   $userid = $_SESSION["user_id"];
+include("../../connection.php");
+$userid = $_SESSION["user_id"];
 
-   // $sqlmain = "SELECT * FROM stylist WHERE s_email=?";
-   // $stmt = $database->prepare($sqlmain);
-   // $stmt->bind_param("s", $useremail);
-   // $stmt->execute();
-   // $userrow = $stmt->get_result();
-   // $userfetch = $userrow->fetch_assoc();
-   // $userid = $userfetch["s_id"];
-   
-   if (isset($_FILES['image_url']) && $_FILES['image_url']['error'] == 0) {
-        $imageInfo = getimagesize($_FILES['image_url']['tmp_name']);
+if (isset($_FILES['image_url']) && $_FILES['image_url']['error'] == 0) {
+    $imageType = $_FILES['image_url']['type'];
 
+    // Check if the file is an image
+    if ($imageType == 'image/jpeg' || $imageType == 'image/png') {
+        // Create an image resource from the uploaded file
+        if ($imageType == 'image/jpeg') {
+            $imageResource = imagecreatefromjpeg($_FILES['image_url']['tmp_name']);
+        } else {
+            $imageResource = imagecreatefrompng($_FILES['image_url']['tmp_name']);
+        }
 
-       $stmt = $database->prepare("UPDATE stylist SET image_url=? WHERE s_id=?");
-              
-       // Read the entire file into a variable
-       $photoData = file_get_contents($_FILES['image_url']['tmp_name']);
-    //    var_dump($photoData);
-       $binaryPhotoData = b"$photoData";
-    //    var_dump($photoData);
+        if ($imageResource !== false) {
+            // Start buffering
+            ob_start();
 
-       // Close the file handle
-       
-       // bind the file data and the user ID to the prepared statement
-       $stmt->bind_param("si", $photoData, $userid);
-   
-       // Execute the statement
-       if ($stmt->execute()) {
-           echo "Profile updated successfully!";
-       } else {
-           echo "Error updating profile: " . $stmt->error;
-       }
-   }
+            // Compress and output the image to the buffer
+            // Adjust the quality parameter as needed (0 - worst quality, 100 - best quality)
+            if ($imageType == 'image/jpeg') {
+                imagejpeg($imageResource, null, 50); // For JPEG
+            } else {
+                imagepng($imageResource, null, 6); // For PNG (0 - no compression, 9 - maximum)
+            }
+
+            // Get the compressed image data from the buffer
+            $compressedImage = ob_get_contents();
+
+            // End buffering and clean up
+            ob_end_clean();
+            imagedestroy($imageResource);
+
+            // Prepare the SQL statement
+            $stmt = $database->prepare("UPDATE stylist SET image_url=? WHERE s_id=?");
+
+            // Bind the file data and the user ID to the prepared statement
+            $stmt->bind_param("bi", $compressedImage, $userid);
+
+            // Execute the statement
+            if ($stmt->execute()) {
+                echo "Profile updated successfully!";
+            } else {
+                echo "Error updating profile: " . $stmt->error;
+            }
+        } else {
+            echo "Error processing image.";
+        }
+    } else {
+        echo "Invalid file type.";
+    }
+}
 ?>
