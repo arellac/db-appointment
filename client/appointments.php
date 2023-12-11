@@ -12,13 +12,6 @@
     }
 
     $useremail=$_SESSION["user"];
-    // $sqlmain= "select * from client where c_email=?";
-    // $stmt = $database->prepare($sqlmain);
-    // $stmt->bind_param("s",$useremail);
-    // $stmt->execute();
-    // $userrow = $stmt->get_result();
-    // $userfetch=$userrow->fetch_assoc();
-    // $client_id= $userfetch["c_id"];
     $userid=$_SESSION["user_id"];
 
     // 3. Upcoming Appointments

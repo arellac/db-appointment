@@ -3,25 +3,12 @@ session_start();
 include("../../connection.php");
 $useremail = "";
 
-// Check if the session variable is set
 if (isset($_SESSION["user_id"])) {
     $userid = $_SESSION["user_id"];
 }
 else{
     $userid = 0;
 }
-
-// $sqlmain= "select * from client where c_email=?";
-// $stmt = $database->prepare($sqlmain);
-// $stmt->bind_param("s",$useremail);
-// $stmt->execute();
-// $userrow = $stmt->get_result();
-// $userfetch=$userrow->fetch_assoc();
-// if ($userfetch && isset($userfetch["c_id"])) {
-//     $userid = $userfetch["c_id"];
-// } else {
-//     $userid = 0; // default value
-// }
 
 function time_elapsed_string($datetime, $full = false) {
     $now = new DateTime;

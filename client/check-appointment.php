@@ -1,7 +1,5 @@
 <?php
 
-//import database
-
 $data = json_decode(file_get_contents("php://input"));
 
 if (isset($data->stylistId) && isset($data->date) && isset($data->time)) {

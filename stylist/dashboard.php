@@ -146,10 +146,6 @@ echo "<script>console.log($json_user_info);</script>";
 </head>
 <body>
 
-<!--
-// v0 by Vercel.
-// https://v0.dev/t/WvTllYINMJt
--->
 <div class="grid h-screen min-h-screen w-full overflow-hidden lg:grid-cols-[280px_1fr]">
   <div class="hidden border-r bg-zinc-100/40 lg:block">
     <div class="flex flex-col gap-3">

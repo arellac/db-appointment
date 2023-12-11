@@ -8,13 +8,6 @@
             // header("location: ../login.php");
         }else{
             $userid=$_SESSION["user_id"];
-            // $sqlmain= "select * from client where c-id=?";
-            // $stmt = $database->prepare($sqlmain);
-            // $stmt->bind_param("i",$useremail);
-            // $stmt->execute();
-            // $userrow = $stmt->get_result();
-            // $userfetch=$userrow->fetch_assoc();
-            // $userid= $userfetch["c_id"];
         }
 
     }
@@ -177,7 +170,6 @@
         </div>
     <!-- sTaRs -->
       <?php
-        // Assuming you have already established a PDO connection as $pdo
 
         // Prepare the SQL statement
         $stmt = $database->prepare("SELECT AVG(rating) as average_rating FROM reviews WHERE s_id = ?");
@@ -684,10 +676,14 @@ document.addEventListener("DOMContentLoaded", function () {
                         },
                         body: JSON.stringify(data),
                     })
-                    .then((response) => response.json())
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok ' + response.statusText);
+                        }
+                        return response.json();
+                    })
                     .then((data) => {
                         console.log(data); // Log the server response
-                        // Close the modal
                         modal.classList.add("hidden");
 
                         // Show SweetAlert confirmation
@@ -697,13 +693,11 @@ document.addEventListener("DOMContentLoaded", function () {
                             icon: 'success',
                             confirmButtonText: 'OK'
                         }).then((result) => {
-                            // Redirect to home page after clicking OK on the alert
                             if (result.isConfirmed) {
                                 window.location.href = '/db-project/index.php';
                             }
                         });
 
-                        // Remove the event listener to prevent duplicates
                         confirmButton.removeEventListener("click", onConfirmButtonClick);
                     })
                     .catch((error) => {
@@ -716,7 +710,6 @@ document.addEventListener("DOMContentLoaded", function () {
                             icon: 'error',
                             confirmButtonText: 'OK'
                         }).then((result) => {
-                            // Redirect to home page after clicking OK on the alert
                             if (result.isConfirmed) {
                                 window.location.href = '/db-project/index.php';
                             }
@@ -724,6 +717,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         confirmButton.removeEventListener("click", onConfirmButtonClick);
                     });
                 }
+
 
                 confirmButton.addEventListener("click", onConfirmButtonClick);
             });
@@ -748,20 +742,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const tabs = document.querySelectorAll('[role="tab"]');
     const tabContents = document.querySelectorAll('[role="tabpanel"]');
 
-    // Activate the first tab and its content by default
     tabs[0].classList.add('active');
     tabContents[0].classList.remove('hidden');
 
     tabs.forEach(function(tab) {
         tab.addEventListener('click', function(e) {
-            // Remove current active classes
             tabs.forEach(t => t.classList.remove('active'));
             tabContents.forEach(tc => tc.classList.add('hidden'));
 
-            // Add active class to the clicked tab
             e.currentTarget.classList.add('active');
 
-            // Show associated tab content
             const contentId = e.currentTarget.getAttribute('aria-controls');
             document.getElementById(contentId).classList.remove('hidden');
         });

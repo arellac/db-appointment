@@ -5,9 +5,7 @@
 session_start();
 
 $_SESSION["user"]="";
-// $_SESSION["usertype"]="";
 
-// Set the new timezone
 date_default_timezone_set('Asia/Kolkata');
 $date = date('Y-m-d');
 
@@ -55,7 +53,6 @@ if($_POST){
                 $database->query("insert into client(c_id) values('$lastInsertedId');");
                 header('Location: index.php');
             }
-            // header('Location: client/index.php');
 
             $error='<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;"></label>';
         }
@@ -68,7 +65,6 @@ if($_POST){
 
     
 }else{
-    //header('location: signup.php');
     $error='<label for="promter" class="form-label"></label>';
 }
 include './components/nav.php';

@@ -1,30 +1,16 @@
 <?php
-// Include your database connection code here
 session_start();
 $useremail=$_SESSION["user"];
 
-// if(isset($_SESSION["user"])){
-//     if(($_SESSION["user"])=="" or $_SESSION['usertype']!='C'){
-//         // header("location: ../login.php");
-//     }else{
-//         $useremail=$_SESSION["user"];
-//     }
-
-// }else{
-//     // header("location: ../login.php");
-// }
-
-
-//import database
 include("../connection.php");
-// $sqlmain= "select * from client where c_email=?";
-// $stmt = $database->prepare($sqlmain);
-// $stmt->bind_param("s",$useremail);
-// $stmt->execute();
-// $userrow = $stmt->get_result();
-// $userfetch=$userrow->fetch_assoc();
-// $userid = $userfetch["c_id"];
-$userid=$_SESSION["user_id"];
+
+if (!isset($_SESSION["user_id"])) {
+    http_response_code(401); 
+    echo json_encode(["error" => "User not logged in"]);
+    exit;
+}
+
+$userid = $_SESSION["user_id"];
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $data = json_decode(file_get_contents("php://input"));
     

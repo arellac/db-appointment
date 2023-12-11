@@ -4,14 +4,12 @@
     $_SESSION["user"]="";
     $_SESSION["usertype"]="";
 
-    // Set the new timezone
     date_default_timezone_set('Asia/Kolkata');
     $date = date('Y-m-d');
 
     $_SESSION["date"]=$date;
     
 
-    //import database
     include("connection.php");
 
     
@@ -39,13 +37,12 @@
                     $row = $result->fetch_assoc();
                     $member_id = $row['m_id'];
                 
-                    // Now you can store the member ID in the session
                     $_SESSION['user'] = $email;
-                    $_SESSION['user_id'] = $member_id; // Store the member ID in the session
+                    $_SESSION['user_id'] = $member_id; 
                     $_SESSION['usertype'] = 'C';
                 
                     header('location: ./index.php');
-                    exit(); // It's a good practice to call exit() after header redirection
+                    exit(); 
                 } else {
                     $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
                 }
