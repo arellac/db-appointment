@@ -138,7 +138,7 @@
             $stylist_name = $row['m_name'];
             $sln_name = $row['sln_name'];
 
-            echo '<a class="text-gray-500" href="/index.php">Home</a>  &gt; ' . $stylist_name .'';
+            echo '<a class="text-gray-500" href="/db-project/index.php">Home</a>  &gt; ' . $stylist_name .'';
         }
     ?>
     </div>
@@ -699,7 +699,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         }).then((result) => {
                             // Redirect to home page after clicking OK on the alert
                             if (result.isConfirmed) {
-                                window.location.href = '/index.php';
+                                window.location.href = '/db-project/index.php';
                             }
                         });
 
@@ -718,7 +718,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         }).then((result) => {
                             // Redirect to home page after clicking OK on the alert
                             if (result.isConfirmed) {
-                                window.location.href = '/index.php';
+                                window.location.href = '/db-project/index.php';
                             }
                         });
                         confirmButton.removeEventListener("click", onConfirmButtonClick);
